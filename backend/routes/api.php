@@ -9,12 +9,17 @@ use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\HealthController;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
 */
+
+// Health Check (sin versionado)
+Route::get('/health', [HealthController::class, 'check']);
+Route::get('/version', [HealthController::class, 'version']);
 
 // Rutas públicas
 Route::prefix('v1')->group(function () {
