@@ -1,14 +1,14 @@
-# Tienda Online Multi-Tenant
+# 🛍️ Tienda Online Multi-Tenant
 
 Plataforma de e-commerce multi-tenant con panel de super administrador, gestión de inquilinos y marketplace público.
 
-## 🚀 Características
+## ✨ Características
 
 - **Multi-Tenant**: Múltiples tiendas en una sola plataforma
 - **Roles y Permisos**: SuperAdmin, TenantAdmin, Customer, Guest
 - **Catálogo Público**: Navegación sin login requerido
 - **Pasarelas de Pago**: Mercado Pago, Stripe, PayPal
-- **Responsive**: Diseño adaptable a todos los dispositivos
+- **Seguridad Reforzada**: Protección contra vulnerabilidades comunes
 - **API REST**: Backend con Laravel + Frontend con React
 
 ## 📁 Estructura del Proyecto
@@ -16,8 +16,7 @@ Plataforma de e-commerce multi-tenant con panel de super administrador, gestión
 ```
 ├── backend/          # Laravel 10.x API
 ├── frontend/         # React + Vite SPA
-├── docs/             # Documentación
-└── deployment/       # Scripts de despliegue
+└── .docs/            # Documentación privada
 ```
 
 ## 🛠️ Stack Tecnológico
@@ -68,9 +67,14 @@ npm install
 npm run dev
 ```
 
-## 🌐 Despliegue en Hostinger
+## 🔒 Seguridad
 
-Ver documentación en `deployment/HOSTINGER.md`
+La aplicación incluye protecciones contra:
+- SQL Injection
+- XSS (Cross-Site Scripting)
+- CSRF (Cross-Site Request Forgery)
+- Clickjacking
+- MIME Sniffing
 
 ## 📝 Licencia
 
