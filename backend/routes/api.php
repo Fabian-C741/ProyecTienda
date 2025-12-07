@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\UploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -102,6 +103,11 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'audit', 'rate.limit:60,1'])->g
     Route::delete('/products/{productId}/reviews/{reviewId}', [ReviewController::class, 'destroy']);
     Route::post('/products/{productId}/reviews/{reviewId}/respond', [ReviewController::class, 'respond']);
     
+    // Upload de imágenes
+    Route::post('/upload/image', [UploadController::class, 'uploadImage']);
+    Route::post('/upload/multiple', [UploadController::class, 'uploadMultiple']);
+    Route::delete('/upload/image', [UploadController::class, 'deleteImage']);
+    
     // Webhooks de pagos (sin autenticación pero con validación)
     Route::post('/webhooks/mercadopago', [PaymentController::class, 'webhookMercadoPago'])->withoutMiddleware(['auth:sanctum', 'audit']);
     Route::post('/webhooks/stripe', [PaymentController::class, 'webhookStripe'])->withoutMiddleware(['auth:sanctum', 'audit']);
@@ -113,6 +119,12 @@ Route::prefix('v1/admin')->middleware(['auth:sanctum', 'audit'])->group(function
     
     // Moderación de reseñas
     Route::put('/reviews/{reviewId}/moderate', [ReviewController::class, 'moderate'])
+        ->middleware('role:tenant_admin|super_admin');
+    
+    // Dashboard y estadísticas
+    Route::get('/dashboard/stats', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'stats'])
+        ->middleware('role:tenant_admin|vendedor|super_admin');
+    Route::get('/dashboard/revenue-chart', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'revenueChart'])
         ->middleware('role:tenant_admin|super_admin');
     
     // Super Admin - Gestión de Tenants
