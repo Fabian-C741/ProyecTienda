@@ -1,0 +1,5 @@
+# Redireccionar todo a backend/public
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(.*)$ backend/public/$1 [L]
+</IfModule>
