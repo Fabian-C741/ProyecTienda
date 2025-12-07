@@ -24,18 +24,18 @@ class ProductWebController extends Controller
         }
         
         if ($request->filled('status')) {
-            $query->where('active', $request->status == 'active');
+            $query->where('is_active', $request->status == 'active');
         }
         
         $products = $query->latest()->paginate(10);
-        $categories = Category::where('active', true)->get();
+        $categories = Category::where('is_active', true)->get();
         
         return view('admin.products.index', compact('products', 'categories'));
     }
     
     public function create()
     {
-        $categories = Category::where('active', true)->get();
+        $categories = Category::where('is_active', true)->get();
         return view('admin.products.create', compact('categories'));
     }
     
@@ -48,11 +48,11 @@ class ProductWebController extends Controller
             'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
             'image_url' => 'nullable|url',
-            'active' => 'boolean',
+            'is_active' => 'boolean',
         ]);
         
         $validated['slug'] = Str::slug($validated['name']);
-        $validated['active'] = $request->has('active');
+        $validated['is_active'] = $request->has('is_active');
         
         Product::create($validated);
         
@@ -62,7 +62,7 @@ class ProductWebController extends Controller
     
     public function edit(Product $product)
     {
-        $categories = Category::where('active', true)->get();
+        $categories = Category::where('is_active', true)->get();
         return view('admin.products.edit', compact('product', 'categories'));
     }
     
@@ -75,11 +75,11 @@ class ProductWebController extends Controller
             'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
             'image_url' => 'nullable|url',
-            'active' => 'boolean',
+            'is_active' => 'boolean',
         ]);
         
         $validated['slug'] = Str::slug($validated['name']);
-        $validated['active'] = $request->has('active');
+        $validated['is_active'] = $request->has('is_active');
         
         $product->update($validated);
         
