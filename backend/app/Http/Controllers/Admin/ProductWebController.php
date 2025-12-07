@@ -33,6 +33,19 @@ class ProductWebController extends Controller
         return view('admin.products.index', compact('products', 'categories'));
     }
     
+    public function search(Request $request)
+    {
+        $query = $request->get('q', '');
+        
+        $products = Product::where('name', 'like', '%' . $query . '%')
+                    ->orWhere('description', 'like', '%' . $query . '%')
+                    ->orWhere('sku', 'like', '%' . $query . '%')
+                    ->limit(10)
+                    ->get(['id', 'name', 'price', 'stock', 'featured_image']);
+        
+        return response()->json($products);
+    }
+    
     public function create()
     {
         $categories = Category::where('is_active', true)->get();
