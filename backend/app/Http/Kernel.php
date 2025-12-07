@@ -20,11 +20,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        
-        // Middlewares de seguridad personalizados
-        \App\Http\Middleware\SecurityHeaders::class,
-        \App\Http\Middleware\Cors::class,
+        \App\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
     /**
