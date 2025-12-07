@@ -88,8 +88,8 @@
             <!-- Estado Activo -->
             <div class="md:col-span-2">
                 <div class="flex items-center">
-                    <input type="checkbox" name="active" id="active" value="1" {{ old('active', $product->active) ? 'checked' : '' }} class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                    <label for="active" class="ml-2 block text-sm text-gray-700">
+                    <input type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', $product->is_active) ? 'checked' : '' }} class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="is_active" class="ml-2 block text-sm text-gray-700">
                         Producto activo (visible en la tienda)
                     </label>
                 </div>
