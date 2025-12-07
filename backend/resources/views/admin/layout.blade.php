@@ -48,6 +48,11 @@
                     <span>Categorías</span>
                 </a>
                 
+                <a href="/admin/coupons" class="flex items-center px-4 py-3 mb-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition {{ request()->is('admin/coupons*') ? 'bg-white bg-opacity-20' : '' }}">
+                    <i class="fas fa-ticket-alt mr-3"></i>
+                    <span>Cupones</span>
+                </a>
+                
                 <a href="/admin/orders" class="flex items-center px-4 py-3 mb-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition {{ request()->is('admin/orders*') ? 'bg-white bg-opacity-20' : '' }}">
                     <i class="fas fa-shopping-cart mr-3"></i>
                     <span>Órdenes</span>
