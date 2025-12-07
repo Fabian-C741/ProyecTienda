@@ -1,0 +1,14 @@
+{
+    "name": "tienda-online/multi-tenant",
+    "description": "Plataforma multi-tenant de e-commerce",
+    "type": "project",
+    "require": {},
+    "scripts": {
+        "post-install-cmd": [
+            "cd backend && composer install --no-dev --optimize-autoloader --no-interaction"
+        ],
+        "post-update-cmd": [
+            "cd backend && composer install --no-dev --optimize-autoloader --no-interaction"
+        ]
+    }
+}
