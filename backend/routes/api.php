@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\HealthController;
+use App\Http\Controllers\Api\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +22,29 @@ use App\Http\Controllers\Api\HealthController;
 Route::get('/health', [HealthController::class, 'check']);
 Route::get('/version', [HealthController::class, 'version']);
 
+// Endpoint raíz de la API
+Route::get('/v1', function () {
+    return response()->json([
+        'message' => 'Tienda Multi-Tenant API v1',
+        'status' => 'online',
+        'version' => '1.0.0',
+        'endpoints' => [
+            'health' => '/api/health',
+            'version' => '/api/version',
+            'auth' => '/api/v1/login',
+            'register' => '/api/v1/register',
+            'products' => '/api/v1/products',
+            'categories' => '/api/v1/categories',
+            'cart' => '/api/v1/cart',
+            'orders' => '/api/v1/orders',
+            'documentation' => 'https://github.com/Fabian-C741/ProyecTienda'
+        ],
+        'timestamp' => now()->toIso8601String()
+    ]);
+});
+
 // Rutas públicas
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->middleware(['rate.limit:120,1'])->group(function () {
     
     // Autenticación
     Route::post('/register', [AuthController::class, 'register']);
@@ -49,10 +71,13 @@ Route::prefix('v1')->group(function () {
     Route::put('/cart/items/{id}', [CartController::class, 'updateItem']);
     Route::delete('/cart/items/{id}', [CartController::class, 'removeItem']);
     Route::delete('/cart/clear', [CartController::class, 'clear']);
+    
+    // Reseñas públicas
+    Route::get('/products/{productId}/reviews', [ReviewController::class, 'index']);
 });
 
 // Rutas protegidas (requieren autenticación)
-Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+Route::prefix('v1')->middleware(['auth:sanctum', 'audit', 'rate.limit:60,1'])->group(function () {
     
     // Autenticación
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -71,14 +96,24 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::post('/payments/stripe/create', [PaymentController::class, 'createStripe']);
     Route::post('/payments/paypal/create', [PaymentController::class, 'createPayPal']);
     
+    // Reseñas de productos
+    Route::post('/products/{productId}/reviews', [ReviewController::class, 'store']);
+    Route::put('/products/{productId}/reviews/{reviewId}', [ReviewController::class, 'update']);
+    Route::delete('/products/{productId}/reviews/{reviewId}', [ReviewController::class, 'destroy']);
+    Route::post('/products/{productId}/reviews/{reviewId}/respond', [ReviewController::class, 'respond']);
+    
     // Webhooks de pagos (sin autenticación pero con validación)
-    Route::post('/webhooks/mercadopago', [PaymentController::class, 'webhookMercadoPago'])->withoutMiddleware('auth:sanctum');
-    Route::post('/webhooks/stripe', [PaymentController::class, 'webhookStripe'])->withoutMiddleware('auth:sanctum');
-    Route::post('/webhooks/paypal', [PaymentController::class, 'webhookPayPal'])->withoutMiddleware('auth:sanctum');
+    Route::post('/webhooks/mercadopago', [PaymentController::class, 'webhookMercadoPago'])->withoutMiddleware(['auth:sanctum', 'audit']);
+    Route::post('/webhooks/stripe', [PaymentController::class, 'webhookStripe'])->withoutMiddleware(['auth:sanctum', 'audit']);
+    Route::post('/webhooks/paypal', [PaymentController::class, 'webhookPayPal'])->withoutMiddleware(['auth:sanctum', 'audit']);
 });
 
 // Rutas de administración (requieren roles específicos)
-Route::prefix('v1/admin')->middleware(['auth:sanctum'])->group(function () {
+Route::prefix('v1/admin')->middleware(['auth:sanctum', 'audit'])->group(function () {
+    
+    // Moderación de reseñas
+    Route::put('/reviews/{reviewId}/moderate', [ReviewController::class, 'moderate'])
+        ->middleware('role:tenant_admin|super_admin');
     
     // Super Admin - Gestión de Tenants
     Route::middleware(['role:super_admin'])->group(function () {
