@@ -12,9 +12,10 @@
 
 <!-- Filtros -->
 <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-    <form method="GET" action="{{ route('admin.products.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Buscar productos..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+    <form method="GET" action="{{ route('admin.products.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4" id="filterForm">
+        <div class="relative">
+            <input type="text" name="search" id="searchInput" value="{{ request('search') }}" placeholder="Buscar productos..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" autocomplete="off">
+            <div id="searchResults" class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg hidden max-h-60 overflow-y-auto"></div>
         </div>
         <div>
             <select name="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -43,6 +44,57 @@
         </div>
     </form>
 </div>
+
+<script>
+// Búsqueda en tiempo real con autocompletado
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+let searchTimeout;
+
+searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    const query = this.value.trim();
+    
+    if (query.length < 2) {
+        searchResults.classList.add('hidden');
+        return;
+    }
+    
+    searchTimeout = setTimeout(() => {
+        fetch(`/admin/products/search?q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length === 0) {
+                    searchResults.innerHTML = '<div class="p-4 text-gray-500 text-sm">No se encontraron productos</div>';
+                    searchResults.classList.remove('hidden');
+                    return;
+                }
+                
+                let html = '';
+                data.forEach(product => {
+                    html += `
+                        <a href="/admin/products/${product.id}/edit" class="flex items-center p-3 hover:bg-gray-50 border-b">
+                            <img src="${product.featured_image || 'https://via.placeholder.com/40'}" alt="${product.name}" class="w-10 h-10 rounded object-cover mr-3">
+                            <div class="flex-1">
+                                <p class="font-semibold text-sm">${product.name}</p>
+                                <p class="text-xs text-gray-500">$${product.price} - Stock: ${product.stock}</p>
+                            </div>
+                        </a>
+                    `;
+                });
+                searchResults.innerHTML = html;
+                searchResults.classList.remove('hidden');
+            });
+    }, 300);
+});
+
+// Cerrar resultados al hacer clic fuera
+document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.classList.add('hidden');
+    }
+});
+</script>
 
 <!-- Tabla de productos -->
 <div class="bg-white rounded-lg shadow-md overflow-hidden">

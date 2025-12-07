@@ -34,6 +34,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardWebController::class, 'index'])->name('dashboard');
     
     // Products CRUD
+    Route::get('/products/search', [ProductWebController::class, 'search'])->name('products.search');
     Route::resource('products', ProductWebController::class);
     
     // Categories CRUD
