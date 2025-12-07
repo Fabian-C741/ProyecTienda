@@ -27,7 +27,19 @@ class PaymentGatewayWebController extends Controller
             'api_secret' => 'nullable|string',
         ]);
 
-        $paymentGateway->update($validated);
+        // Actualizar credenciales en el array
+        $credentials = $paymentGateway->credentials ?? [];
+        if ($request->filled('api_key')) {
+            $credentials['api_key'] = $request->api_key;
+        }
+        if ($request->filled('api_secret')) {
+            $credentials['api_secret'] = $request->api_secret;
+        }
+
+        $paymentGateway->update([
+            'is_active' => $request->boolean('is_active'),
+            'credentials' => $credentials,
+        ]);
 
         return redirect()->route('admin.payment-gateways.index')
             ->with('success', 'Pasarela de pago actualizada exitosamente');

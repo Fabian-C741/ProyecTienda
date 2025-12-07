@@ -18,8 +18,8 @@
     <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex justify-between items-start mb-4">
             <div>
-                <h3 class="text-xl font-semibold">{{ ucfirst($gateway->name) }}</h3>
-                <p class="text-sm text-gray-500 mt-1">{{ $gateway->description }}</p>
+                <h3 class="text-xl font-semibold">{{ ucfirst($gateway->display_name ?? $gateway->name) }}</h3>
+                <p class="text-sm text-gray-500 mt-1">{{ $gateway->is_test_mode ? 'Modo Prueba' : 'Modo Producción' }}</p>
             </div>
             <span class="px-3 py-1 rounded-full text-sm {{ $gateway->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                 {{ $gateway->is_active ? 'Activa' : 'Inactiva' }}
