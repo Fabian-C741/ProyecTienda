@@ -48,11 +48,25 @@ class ProductWebController extends Controller
             'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
             'image_url' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'is_active' => 'boolean',
         ]);
         
         $validated['slug'] = Str::slug($validated['name']);
         $validated['is_active'] = $request->has('is_active');
+        
+        // Manejar carga de imagen
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . Str::slug($validated['name']) . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/products'), $imageName);
+            $validated['featured_image'] = '/uploads/products/' . $imageName;
+        } elseif (!empty($validated['image_url'])) {
+            $validated['featured_image'] = $validated['image_url'];
+        }
+        
+        unset($validated['image_url']);
+        unset($validated['image']);
         
         Product::create($validated);
         
@@ -75,11 +89,30 @@ class ProductWebController extends Controller
             'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',
             'image_url' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'is_active' => 'boolean',
         ]);
         
         $validated['slug'] = Str::slug($validated['name']);
         $validated['is_active'] = $request->has('is_active');
+        
+        // Manejar carga de imagen
+        if ($request->hasFile('image')) {
+            // Eliminar imagen anterior si existe
+            if ($product->featured_image && file_exists(public_path($product->featured_image))) {
+                @unlink(public_path($product->featured_image));
+            }
+            
+            $image = $request->file('image');
+            $imageName = time() . '_' . Str::slug($validated['name']) . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/products'), $imageName);
+            $validated['featured_image'] = '/uploads/products/' . $imageName;
+        } elseif (!empty($validated['image_url'])) {
+            $validated['featured_image'] = $validated['image_url'];
+        }
+        
+        unset($validated['image_url']);
+        unset($validated['image']);
         
         $product->update($validated);
         

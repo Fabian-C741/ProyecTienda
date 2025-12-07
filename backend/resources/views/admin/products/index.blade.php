@@ -63,7 +63,7 @@
             <tr class="hover:bg-gray-50 transition">
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
-                        <img src="{{ $product->image_url ?? 'https://via.placeholder.com/50' }}" alt="{{ $product->name }}" class="w-12 h-12 rounded-lg object-cover mr-3">
+                        <img src="{{ $product->featured_image ?? 'https://via.placeholder.com/50' }}" alt="{{ $product->name }}" class="w-12 h-12 rounded-lg object-cover mr-3">
                         <div>
                             <div class="text-sm font-medium text-gray-900">{{ $product->name }}</div>
                             <div class="text-sm text-gray-500">{{ Str::limit($product->description, 40) }}</div>

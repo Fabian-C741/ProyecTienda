@@ -74,13 +74,25 @@
             <!-- URL de Imagen -->
             <div>
                 <label for="image_url" class="block text-sm font-medium text-gray-700 mb-2">URL de Imagen</label>
-                <input type="url" name="image_url" id="image_url" value="{{ old('image_url', $product->image_url) }}" placeholder="https://ejemplo.com/imagen.jpg" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('image_url') border-red-500 @enderror">
+                <input type="url" name="image_url" id="image_url" value="{{ old('image_url', $product->featured_image) }}" placeholder="https://ejemplo.com/imagen.jpg" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('image_url') border-red-500 @enderror">
                 @error('image_url')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
-                @if($product->image_url)
+                <p class="mt-1 text-xs text-gray-500">Ingresa una URL de imagen externa</p>
+            </div>
+            
+            <!-- Subir Imagen desde PC -->
+            <div>
+                <label for="image" class="block text-sm font-medium text-gray-700 mb-2">O Subir Nueva Imagen desde tu PC</label>
+                <input type="file" name="image" id="image" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('image') border-red-500 @enderror">
+                @error('image')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+                <p class="mt-1 text-xs text-gray-500">JPG, PNG, GIF o WEBP. Máximo 2MB</p>
+                @if($product->featured_image)
                     <div class="mt-2">
-                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-32 h-32 object-cover rounded-lg">
+                        <p class="text-xs text-gray-600 mb-1">Imagen actual:</p>
+                        <img src="{{ $product->featured_image }}" alt="{{ $product->name }}" class="w-32 h-32 object-cover rounded-lg border">
                     </div>
                 @endif
             </div>

@@ -63,7 +63,7 @@
                     <span>Reseñas</span>
                 </a>
                 
-                <a href="/admin/payments" class="flex items-center px-4 py-3 mb-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition {{ request()->is('admin/payments*') ? 'bg-white bg-opacity-20' : '' }}">
+                <a href="/admin/payment-gateways" class="flex items-center px-4 py-3 mb-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition {{ request()->is('admin/payment-gateways*') ? 'bg-white bg-opacity-20' : '' }}">
                     <i class="fas fa-credit-card mr-3"></i>
                     <span>Pasarelas de Pago</span>
                 </a>
