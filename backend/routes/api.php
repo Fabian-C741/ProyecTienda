@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\ReviewController;
-use App\Http\Controllers\Api\UploadController;
+use App\Http\Controllers\Api\ImageUploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -104,9 +104,9 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'audit', 'rate.limit:60,1'])->g
     Route::post('/products/{productId}/reviews/{reviewId}/respond', [ReviewController::class, 'respond']);
     
     // Upload de imágenes
-    Route::post('/upload/image', [UploadController::class, 'uploadImage']);
-    Route::post('/upload/multiple', [UploadController::class, 'uploadMultiple']);
-    Route::delete('/upload/image', [UploadController::class, 'deleteImage']);
+    Route::post('/upload/image', [ImageUploadController::class, 'upload']);
+    Route::post('/upload/images', [ImageUploadController::class, 'uploadMultiple']);
+    Route::delete('/upload/image', [ImageUploadController::class, 'delete']);
     
     // Webhooks de pagos (sin autenticación pero con validación)
     Route::post('/webhooks/mercadopago', [PaymentController::class, 'webhookMercadoPago'])->withoutMiddleware(['auth:sanctum', 'audit']);

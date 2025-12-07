@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Cart;
+use App\Mail\OrderConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -134,6 +136,13 @@ class OrderController extends Controller
 
             // Limpiar carrito
             $cart->items()->delete();
+
+            // Enviar email de confirmación
+            try {
+                Mail::to($order->customer_email)->send(new OrderConfirmation($order));
+            } catch (\Exception $e) {
+                \Log::warning('Error enviando email de confirmación de orden: ' . $e->getMessage());
+            }
 
             DB::commit();
 

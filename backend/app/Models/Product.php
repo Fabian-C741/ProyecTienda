@@ -56,6 +56,8 @@ class Product extends Model
         'published_at' => 'datetime',
     ];
 
+    protected $appends = ['average_rating', 'total_reviews'];
+
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
@@ -69,6 +71,28 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function approvedReviews(): HasMany
+    {
+        return $this->hasMany(ProductReview::class)->where('is_approved', true);
+    }
+
+    // Accessor para rating promedio
+    public function getAverageRatingAttribute()
+    {
+        return $this->approvedReviews()->avg('rating') ?? 0;
+    }
+
+    // Accessor para total de reviews
+    public function getTotalReviewsAttribute()
+    {
+        return $this->approvedReviews()->count();
     }
 
     public function scopeActive($query)
