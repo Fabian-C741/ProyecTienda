@@ -5,10 +5,10 @@
     "require": {},
     "scripts": {
         "post-install-cmd": [
-            "cd backend && composer install --no-dev --optimize-autoloader --no-interaction"
+            "[ -f backend/composer.json ] && cd backend && /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction || true"
         ],
         "post-update-cmd": [
-            "cd backend && composer install --no-dev --optimize-autoloader --no-interaction"
+            "[ -f backend/composer.json ] && cd backend && /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction || true"
         ]
     }
 }
