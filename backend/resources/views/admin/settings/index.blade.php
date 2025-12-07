@@ -13,7 +13,59 @@
 </div>
 @endif
 
+@if(session('error'))
+<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+    {{ session('error') }}
+</div>
+@endif
+
+@if($errors->any())
+<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+    <ul class="list-disc list-inside">
+        @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Cambiar Contraseña (Solo Super Admin) -->
+    @if(Auth::user()->role === 'admin')
+    <div class="bg-white rounded-lg shadow-md p-6 md:col-span-2">
+        <h3 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fas fa-key text-blue-600 mr-2"></i>
+            Cambiar Contraseña del Super Admin
+        </h3>
+        <form action="{{ route('admin.settings.update-password') }}" method="POST" class="max-w-2xl">
+            @csrf
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Contraseña Actual</label>
+                    <input type="password" name="current_password" required 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                           placeholder="••••••••">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Nueva Contraseña</label>
+                    <input type="password" name="new_password" required 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                           placeholder="••••••••">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Confirmar Nueva</label>
+                    <input type="password" name="new_password_confirmation" required 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                           placeholder="••••••••">
+                </div>
+            </div>
+            <button type="submit" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">
+                <i class="fas fa-save mr-2"></i>Actualizar Contraseña
+            </button>
+        </form>
+    </div>
+    @endif
+
     <!-- Caché -->
     <div class="bg-white rounded-lg shadow-md p-6">
         <h3 class="text-xl font-semibold mb-4">Gestión de Caché</h3>
