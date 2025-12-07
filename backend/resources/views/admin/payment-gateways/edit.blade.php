@@ -21,13 +21,13 @@
 
         <div class="mb-4">
             <label class="block text-gray-700 font-medium mb-2">API Key</label>
-            <input type="text" name="api_key" value="{{ old('api_key', $paymentGateway->api_key) }}" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            <input type="text" name="api_key" value="{{ old('api_key', $paymentGateway->credentials['api_key'] ?? '') }}" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
             <p class="text-sm text-gray-500 mt-1">Clave pública de la API</p>
         </div>
 
         <div class="mb-4">
             <label class="block text-gray-700 font-medium mb-2">API Secret</label>
-            <input type="password" name="api_secret" value="{{ old('api_secret', $paymentGateway->api_secret) }}" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            <input type="password" name="api_secret" value="{{ old('api_secret', $paymentGateway->credentials['api_secret'] ?? '') }}" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
             <p class="text-sm text-gray-500 mt-1">Clave secreta de la API (se almacena encriptada)</p>
         </div>
 

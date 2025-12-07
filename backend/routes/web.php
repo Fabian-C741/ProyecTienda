@@ -53,8 +53,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     
     // Reviews Management
     Route::get('/reviews', [ReviewWebController::class, 'index'])->name('reviews.index');
-    Route::get('/reviews/{review}', [ReviewWebController::class, 'show'])->name('reviews.show');
-    Route::delete('/reviews/{review}', [ReviewWebController::class, 'destroy'])->name('reviews.destroy');
+    Route::get('/reviews/{productReview}', [ReviewWebController::class, 'show'])->name('reviews.show');
+    Route::delete('/reviews/{productReview}', [ReviewWebController::class, 'destroy'])->name('reviews.destroy');
     
     // Payment Gateways
     Route::get('/payment-gateways', [PaymentGatewayWebController::class, 'index'])->name('payment-gateways.index');

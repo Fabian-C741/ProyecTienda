@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Review;
+use App\Models\ProductReview;
 use Illuminate\Http\Request;
 
 class ReviewWebController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Review::with(['user', 'product']);
+        $query = ProductReview::with(['user', 'product']);
 
         if ($request->filled('rating')) {
             $query->where('rating', $request->rating);
@@ -22,15 +22,15 @@ class ReviewWebController extends Controller
         return view('admin.reviews.index', compact('reviews'));
     }
 
-    public function show(Review $review)
+    public function show(ProductReview $productReview)
     {
-        $review->load(['user', 'product']);
-        return view('admin.reviews.show', compact('review'));
+        $productReview->load(['user', 'product']);
+        return view('admin.reviews.show', compact('productReview'));
     }
 
-    public function destroy(Review $review)
+    public function destroy(ProductReview $productReview)
     {
-        $review->delete();
+        $productReview->delete();
 
         return redirect()->route('admin.reviews.index')
             ->with('success', 'Reseña eliminada exitosamente');
