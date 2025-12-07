@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardWebController;
 use App\Http\Controllers\Admin\ProductWebController;
 use App\Http\Controllers\Admin\OrderWebController;
 use App\Http\Controllers\Admin\CategoryWebController;
+use App\Http\Controllers\Admin\CouponWebController;
 use App\Http\Controllers\Admin\UserWebController;
 use App\Http\Controllers\Admin\ReviewWebController;
 use App\Http\Controllers\Admin\PaymentGatewayWebController;
@@ -39,6 +40,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     
     // Categories CRUD
     Route::resource('categories', CategoryWebController::class)->except(['show']);
+    
+    // Coupons CRUD
+    Route::post('/coupons/validate', [CouponWebController::class, 'validate'])->name('coupons.validate');
+    Route::resource('coupons', CouponWebController::class)->except(['show']);
     
     // Orders Management
     Route::get('/orders', [OrderWebController::class, 'index'])->name('orders.index');
