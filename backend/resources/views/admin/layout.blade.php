@@ -73,6 +73,11 @@
                     <span>Pasarelas de Pago</span>
                 </a>
                 
+                <a href="/admin/reports" class="flex items-center px-4 py-3 mb-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition {{ request()->is('admin/reports*') ? 'bg-white bg-opacity-20' : '' }}">
+                    <i class="fas fa-chart-bar mr-3"></i>
+                    <span>Reportes</span>
+                </a>
+                
                 <a href="/admin/settings" class="flex items-center px-4 py-3 mb-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition {{ request()->is('admin/settings*') ? 'bg-white bg-opacity-20' : '' }}">
                     <i class="fas fa-cog mr-3"></i>
                     <span>Configuración</span>
