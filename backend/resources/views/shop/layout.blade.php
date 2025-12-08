@@ -70,32 +70,9 @@
                         <i class="fas fa-th-large mr-1"></i>Productos
                     </a>
                     
-                    @auth
-                    <div x-data="{ open: false }" class="relative">
-                        <button @click="open = !open" class="text-gray-700 hover:text-blue-600">
-                            <i class="fas fa-user mr-1"></i>{{ Auth::user()->name }}
-                        </button>
-                        <div x-show="open" @click.away="open = false" 
-                             class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
-                            <a href="{{ route('account.orders') }}" class="block px-4 py-2 hover:bg-gray-100">
-                                <i class="fas fa-box mr-2"></i>Mis Pedidos
-                            </a>
-                            <a href="{{ route('account.profile') }}" class="block px-4 py-2 hover:bg-gray-100">
-                                <i class="fas fa-user-cog mr-2"></i>Mi Cuenta
-                            </a>
-                            <form action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">
-                                    <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    @else
-                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-sign-in-alt mr-1"></i>Iniciar Sesión
+                    <a href="#" class="text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-user mr-1"></i>Cuenta
                     </a>
-                    @endauth
 
                     <!-- Cart -->
                     <a href="{{ route('cart.index') }}" class="relative text-gray-700 hover:text-blue-600">
