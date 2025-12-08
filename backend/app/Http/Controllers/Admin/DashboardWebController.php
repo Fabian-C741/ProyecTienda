@@ -71,7 +71,7 @@ class DashboardWebController extends Controller
                 'ordersStatusChart'
             ));
         } catch (\Exception $e) {
-            return view('admin.dashboard', [
+            return view('admin.dashboard-simple', [
                 'stats' => [
                     'total_products' => 0,
                     'active_products' => 0,
