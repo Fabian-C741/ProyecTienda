@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\UserWebController;
 use App\Http\Controllers\Admin\ReviewWebController;
 use App\Http\Controllers\Admin\PaymentGatewayWebController;
 use App\Http\Controllers\Admin\SettingsWebController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Shop\HomeController;
 use App\Http\Controllers\Shop\ProductController as ShopProductController;
 use App\Http\Controllers\Shop\CartController;
@@ -77,6 +78,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/payment-gateways', [PaymentGatewayWebController::class, 'index'])->name('payment-gateways.index');
     Route::get('/payment-gateways/{paymentGateway}/edit', [PaymentGatewayWebController::class, 'edit'])->name('payment-gateways.edit');
     Route::put('/payment-gateways/{paymentGateway}', [PaymentGatewayWebController::class, 'update'])->name('payment-gateways.update');
+    
+    // Reports
+    Route::get('/reports', [ReportController::class, 'salesReport'])->name('reports.sales');
+    Route::get('/reports/export', [ReportController::class, 'exportOrders'])->name('reports.export');
     
     // Settings
     Route::get('/settings', [SettingsWebController::class, 'index'])->name('settings.index');
