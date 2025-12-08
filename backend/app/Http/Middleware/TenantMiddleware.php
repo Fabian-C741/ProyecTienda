@@ -15,7 +15,7 @@ class TenantMiddleware
     {
         // Check if user is authenticated
         if (!auth()->check()) {
-            return redirect()->route('login')->with('error', 'Debes iniciar sesión para acceder.');
+            return redirect()->route('tenant.login')->with('error', 'Debes iniciar sesión para acceder.');
         }
         
         $user = auth()->user();
