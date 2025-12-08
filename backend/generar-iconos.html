@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Iconos PWA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2563eb; }
+        canvas {
+            border: 2px solid #ddd;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .preview {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .icon-preview {
+            text-align: center;
+        }
+        .instructions {
+            background: #eff6ff;
+            padding: 15px;
+            border-left: 4px solid #2563eb;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Generador de Iconos PWA</h1>
+        
+        <div class="instructions">
+            <h3>Instrucciones:</h3>
+            <ol>
+                <li>Haz clic en los botones de descarga para obtener los iconos</li>
+                <li>Guarda los archivos como <code>icon-192.png</code> y <code>icon-512.png</code></li>
+                <li>Súbelos a la carpeta <code>backend/public/</code> en tu servidor</li>
+                <li>Los iconos se generan automáticamente con el logo de tu tienda</li>
+            </ol>
+        </div>
+
+        <div class="preview">
+            <div class="icon-preview">
+                <h3>192x192</h3>
+                <canvas id="canvas192" width="192" height="192"></canvas>
+                <br>
+                <button onclick="downloadIcon(192)">⬇️ Descargar icon-192.png</button>
+            </div>
+            
+            <div class="icon-preview">
+                <h3>512x512</h3>
+                <canvas id="canvas512" width="512" height="512"></canvas>
+                <br>
+                <button onclick="downloadIcon(512)">⬇️ Descargar icon-512.png</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            
+            // Fondo azul con bordes redondeados
+            ctx.fillStyle = '#2563eb';
+            roundRect(ctx, 0, 0, size, size, size * 0.2);
+            ctx.fill();
+            
+            // Dibujar carrito de compras
+            const scale = size / 512;
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 20 * scale;
+            
+            // Cuerpo del carrito
+            ctx.beginPath();
+            ctx.moveTo(150 * scale, 150 * scale);
+            ctx.lineTo(180 * scale, 280 * scale);
+            ctx.lineTo(380 * scale, 280 * scale);
+            ctx.lineTo(410 * scale, 150 * scale);
+            ctx.closePath();
+            ctx.stroke();
+            
+            // Ruedas
+            ctx.beginPath();
+            ctx.arc(220 * scale, 380 * scale, 30 * scale, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(350 * scale, 380 * scale, 30 * scale, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Manija
+            ctx.beginPath();
+            ctx.arc(100 * scale, 150 * scale, 50 * scale, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // Líneas decorativas del carrito
+            ctx.beginPath();
+            ctx.moveTo(200 * scale, 180 * scale);
+            ctx.lineTo(220 * scale, 260 * scale);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(280 * scale, 180 * scale);
+            ctx.lineTo(300 * scale, 260 * scale);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(360 * scale, 180 * scale);
+            ctx.lineTo(380 * scale, 260 * scale);
+            ctx.stroke();
+        }
+        
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+        
+        function downloadIcon(size) {
+            const canvas = document.getElementById('canvas' + size);
+            const link = document.createElement('a');
+            link.download = 'icon-' + size + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Dibujar iconos al cargar
+        window.onload = function() {
+            drawIcon(document.getElementById('canvas192'), 192);
+            drawIcon(document.getElementById('canvas512'), 512);
+        };
+    </script>
+</body>
+</html>

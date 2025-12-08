@@ -3,12 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tu tienda online de confianza">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    
     <title>@yield('title', 'Tienda Online')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-50">
+    <!-- App Install Prompt -->
+    <div id="installPrompt" class="hidden fixed bottom-20 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-white rounded-lg shadow-2xl z-50 border-2 border-blue-500">
+        <div class="p-4">
+            <div class="flex items-start gap-3">
+                <div class="bg-blue-100 rounded-full p-3 flex-shrink-0">
+                    <i class="fas fa-mobile-alt text-2xl text-blue-600"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-bold text-lg mb-1">¡Instala nuestra App!</h3>
+                    <p class="text-sm text-gray-600 mb-3">Obtén acceso rápido y una mejor experiencia de compra</p>
+                    <div class="flex gap-2">
+                        <button onclick="installApp()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                            <i class="fas fa-download mr-1"></i>Instalar
+                        </button>
+                        <button onclick="dismissInstallPrompt()" class="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm">
+                            Ahora no
+                        </button>
+                    </div>
+                </div>
+                <button onclick="dismissInstallPrompt()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Navbar -->
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4">
@@ -129,5 +162,77 @@
             </div>
         </div>
     </footer>
+
+    <style>
+        @keyframes slide-up {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .animate-slide-up {
+            animation: slide-up 0.3s ease-out;
+        }
+    </style>
+
+    <script>
+        let deferredPrompt;
+        const installPromptEl = document.getElementById('installPrompt');
+
+        // Detectar si ya se mostró el prompt o si ya está instalada
+        const isInstalled = localStorage.getItem('appInstalled') === 'true';
+        const promptDismissed = localStorage.getItem('installPromptDismissed');
+        const dismissedTime = promptDismissed ? parseInt(promptDismissed) : 0;
+        const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+
+        // Capturar el evento beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Mostrar el prompt si no está instalado y no fue rechazado hace menos de 24h
+            if (!isInstalled && dismissedTime < oneDayAgo) {
+                setTimeout(() => {
+                    installPromptEl.classList.remove('hidden');
+                    installPromptEl.classList.add('animate-slide-up');
+                }, 3000); // Mostrar después de 3 segundos
+            }
+        });
+
+        // Detectar si la app fue instalada
+        window.addEventListener('appinstalled', () => {
+            localStorage.setItem('appInstalled', 'true');
+            installPromptEl.classList.add('hidden');
+        });
+
+        function installApp() {
+            if (!deferredPrompt) {
+                alert('La instalación no está disponible en este momento');
+                return;
+            }
+
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('Usuario aceptó instalar la app');
+                    localStorage.setItem('appInstalled', 'true');
+                } else {
+                    console.log('Usuario rechazó instalar la app');
+                    localStorage.setItem('installPromptDismissed', Date.now().toString());
+                }
+                installPromptEl.classList.add('hidden');
+                deferredPrompt = null;
+            });
+        }
+
+        function dismissInstallPrompt() {
+            localStorage.setItem('installPromptDismissed', Date.now().toString());
+            installPromptEl.classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
