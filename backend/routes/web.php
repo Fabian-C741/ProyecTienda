@@ -71,4 +71,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/settings', [SettingsWebController::class, 'index'])->name('settings.index');
     Route::post('/settings/clear-cache', [SettingsWebController::class, 'clearCache'])->name('settings.clear-cache');
     Route::post('/settings/update-password', [SettingsWebController::class, 'updatePassword'])->name('settings.update-password');
+    Route::post('/settings/update-email', [SettingsWebController::class, 'updateEmail'])->name('settings.update-email');
 });
