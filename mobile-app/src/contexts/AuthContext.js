@@ -34,6 +34,10 @@ export const AuthProvider = ({ children }) => {
       await AsyncStorage.setItem('token', response.token);
       await AsyncStorage.setItem('user', JSON.stringify(response.user));
       
+      // Guardar tenant_id (por defecto 1, o desde respuesta del servidor)
+      const tenantId = response.user?.tenant_id?.toString() || '1';
+      await AsyncStorage.setItem('tenant_id', tenantId);
+      
       setUser(response.user);
       return { success: true };
     } catch (error) {
@@ -69,6 +73,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       await AsyncStorage.removeItem('token');
       await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('tenant_id');
       setUser(null);
     }
   }

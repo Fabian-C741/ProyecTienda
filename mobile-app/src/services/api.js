@@ -11,13 +11,18 @@ const api = axios.create({
   },
 });
 
-// Interceptor para agregar token a todas las peticiones
+// Interceptor para agregar token y tenant_id a todas las peticiones
 api.interceptors.request.use(
   async (config) => {
     const token = await AsyncStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Agregar tenant_id (por ahora hardcodeado, después vendrá de la selección de tienda)
+    const tenantId = await AsyncStorage.getItem('tenant_id') || '1';
+    config.headers['X-Tenant-ID'] = tenantId;
+    
     return config;
   },
   (error) => {
