@@ -12,7 +12,7 @@ class CouponSeeder extends Seeder
     {
         $coupons = [
             [
-                'code' => 'BIENVENIDA2026',
+                'code' => 'BIENVENIDA2024',
                 'type' => 'percentage',
                 'value' => 15.00,
                 'min_purchase' => 50.00,

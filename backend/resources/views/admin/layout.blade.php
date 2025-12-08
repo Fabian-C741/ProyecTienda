@@ -32,7 +32,7 @@
             </div>
             
             <!-- Navigation -->
-            <nav class="mt-6 px-4">
+            <nav class="mt-6 px-4 pb-24 overflow-y-auto" style="max-height: calc(100vh - 10rem);">
                 <a href="/admin/dashboard" class="flex items-center px-4 py-3 mb-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition {{ request()->is('admin/dashboard') ? 'bg-white bg-opacity-20' : '' }}">
                     <i class="fas fa-home mr-3"></i>
                     <span>Dashboard</span>
@@ -83,20 +83,20 @@
                     <span>Configuración</span>
                 </a>
             </nav>
-            
-            <!-- User Info -->
-            <div class="absolute bottom-0 w-64 p-4 bg-black bg-opacity-20">
-                <div class="flex items-center">
-                    <div class="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="ml-3">
-                        <p class="font-semibold">Admin User</p>
-                        <p class="text-xs text-gray-300">admin@tienda.com</p>
-                    </div>
+        </aside>
+        
+        <!-- User Info - Fixed at bottom -->
+        <div class="fixed bottom-0 left-0 w-64 p-4 bg-gradient-to-b from-purple-800 to-purple-900 border-t border-white border-opacity-10 lg:block hidden z-50">
+            <div class="flex items-center">
+                <div class="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="font-semibold text-white">Admin User</p>
+                    <p class="text-xs text-gray-300">admin@tienda.com</p>
                 </div>
             </div>
-        </aside>
+        </div>
         
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">

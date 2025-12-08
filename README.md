@@ -52,15 +52,24 @@ Tienda_online_multiplataformas/
 - Historial de órdenes
 - Perfil de usuario
 
-### 4. 🌐 Website Público (Next.js)
-**Ubicación:** `website/`
+### 4. 🌐 Website Público (Laravel Blade + PWA)
+**Ubicación:** `backend/resources/views/shop/`  
+**URL Producción:** https://ingreso-tienda.kcrsf.com
 
 **Características:**
-- Server-Side Rendering (SSR)
-- Catálogo completo con filtros
-- Detalle de productos
-- Carrito de compras
-- Diseño responsive
+- ✅ Home con categorías y productos destacados
+- ✅ Catálogo completo con filtros y búsqueda
+- ✅ Detalle de productos con reviews
+- ✅ Carrito de compras funcional
+- 🎯 **PWA (Progressive Web App)**
+  - Install prompt inteligente (aparece a los 3 segundos)
+  - Cooldown de 24 horas si el usuario rechaza
+  - Modo standalone (se abre como app nativa)
+  - Manifest.json configurado
+  - Diseño responsive
+- Tailwind CSS + Alpine.js
+
+**Documentación PWA:** Ver `PWA-COMPLETADO.md`
 
 ## 🛠️ Stack Tecnológico
 
@@ -103,12 +112,70 @@ php artisan migrate --seed
 php artisan serve
 ```
 
-### Frontend (React)
+### Mobile App (React Native)
 ```bash
-cd frontend
+cd mobile-app
 npm install
-npm run dev
+npm start
+# Escanea el QR con Expo Go app
 ```
+
+## 📱 PWA (Progressive Web App)
+
+El sitio web público incluye capacidades de PWA:
+
+### ✨ Características
+- ✅ Install prompt inteligente
+- ✅ Aparece automáticamente después de 3 segundos
+- ✅ Respeta decisiones del usuario (cooldown 24h)
+- ✅ Modo standalone (funciona como app nativa)
+- ✅ Iconos configurados (SVG + PNG)
+- ✅ Manifest.json completo
+
+### 🧪 Cómo Probar
+**En Android (Chrome):**
+1. Visita https://ingreso-tienda.kcrsf.com
+2. Espera 3 segundos
+3. Aparecerá popup "¿Instalar aplicación?"
+4. Toca "Instalar App"
+5. La app se agregará a tu pantalla de inicio
+
+**En iOS (Safari):**
+1. Visita https://ingreso-tienda.kcrsf.com
+2. Toca botón "Compartir" → "Añadir a pantalla de inicio"
+
+### 📖 Documentación Completa
+Ver archivo `PWA-COMPLETADO.md` para:
+- Guía de personalización
+- Crear iconos PNG personalizados
+- Troubleshooting
+- Personalizar comportamiento del popup
+
+## 🚀 Desplegar Cambios
+
+### Al Servidor de Producción
+```bash
+# Commit y push
+git add .
+git commit -m "Descripción del cambio"
+git push origin main
+
+# Desplegar en servidor
+ssh -p 65002 u464516792@br-asc-web1885.main-hosting.eu
+cd ~/domains/ingreso-tienda.kcrsf.com/public_html/backend
+git pull origin main
+```
+
+### Credenciales del Servidor
+- **Host:** br-asc-web1885.main-hosting.eu
+- **SSH:** u464516792@br-asc-web1885.main-hosting.eu
+- **Puerto:** 65002
+- **Path:** ~/domains/ingreso-tienda.kcrsf.com/public_html/backend/
+
+### Panel de Administración
+- **URL:** https://ingreso-tienda.kcrsf.com/admin
+- **Email:** admin@tienda.com
+- **Password:** admin123
 
 ## 🔒 Seguridad
 
