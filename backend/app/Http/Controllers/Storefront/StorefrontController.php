@@ -38,14 +38,14 @@ class StorefrontController extends Controller
         $featuredProducts = Product::where('tenant_id', $tenant->id)
             ->where('is_active', true)
             ->where('is_featured', true)
-            ->with('images', 'category')
+            ->with('category')
             ->take(8)
             ->get();
 
         // Productos recientes
         $recentProducts = Product::where('tenant_id', $tenant->id)
             ->where('is_active', true)
-            ->with('images', 'category')
+            ->with('category')
             ->latest()
             ->take(12)
             ->get();
@@ -76,7 +76,7 @@ class StorefrontController extends Controller
 
         $query = Product::where('tenant_id', $tenant->id)
             ->where('is_active', true)
-            ->with('images', 'category');
+            ->with('category');
 
         // Filtro por categoría
         if ($request->category) {
@@ -128,7 +128,7 @@ class StorefrontController extends Controller
         $product = Product::where('tenant_id', $tenant->id)
             ->where('slug', $productSlug)
             ->where('is_active', true)
-            ->with('images', 'category', 'reviews.user')
+            ->with('category')
             ->firstOrFail();
 
         // Productos relacionados de la misma categoría
@@ -136,7 +136,6 @@ class StorefrontController extends Controller
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->where('is_active', true)
-            ->with('images')
             ->take(4)
             ->get();
 
