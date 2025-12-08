@@ -20,8 +20,8 @@ class TenantSeeder extends Seeder
             'slug' => 'tienda-demo',
             'email' => 'demo@tienda.com',
             'phone' => '+54 11 1234-5678',
-            'address' => 'Av. Example 123',
-            'is_active' => true,
+            'description' => 'Tienda de demostración para pruebas',
+            'status' => 'active',
         ]);
 
         // Crear usuario tenant_admin para la tienda
