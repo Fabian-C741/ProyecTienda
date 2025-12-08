@@ -10,6 +10,9 @@ use App\Http\Controllers\Admin\UserWebController;
 use App\Http\Controllers\Admin\ReviewWebController;
 use App\Http\Controllers\Admin\PaymentGatewayWebController;
 use App\Http\Controllers\Admin\SettingsWebController;
+use App\Http\Controllers\Shop\HomeController;
+use App\Http\Controllers\Shop\ProductController as ShopProductController;
+use App\Http\Controllers\Shop\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,9 +25,19 @@ use App\Http\Controllers\Admin\SettingsWebController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Public Shop Routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/productos', [ShopProductController::class, 'index'])->name('shop.index');
+Route::get('/productos/buscar', [ShopProductController::class, 'search'])->name('shop.search');
+Route::get('/categoria/{slug}', [ShopProductController::class, 'category'])->name('shop.category');
+Route::get('/producto/{slug}', [ShopProductController::class, 'show'])->name('shop.product');
+
+// Cart Routes
+Route::get('/carrito', [CartController::class, 'index'])->name('cart.index');
+Route::post('/carrito/agregar/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::put('/carrito/actualizar/{product}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/carrito/eliminar/{product}', [CartController::class, 'remove'])->name('cart.remove');
+Route::delete('/carrito/vaciar', [CartController::class, 'clear'])->name('cart.clear');
 
 // Admin Panel Routes
 Route::prefix('admin')->name('admin.')->group(function () {
