@@ -46,13 +46,9 @@
         @foreach($featuredProducts as $product)
         <div class="bg-white rounded-lg shadow hover:shadow-xl transition group">
             <a href="{{ storefront_route('product', $product->slug) }}">
-                @if($product->images->first())
-                <img src="{{ $product->images->first()->image_url }}" alt="{{ $product->name }}" class="w-full h-64 object-cover rounded-t-lg">
-                @else
-                <div class="w-full h-64 bg-gray-200 rounded-t-lg flex items-center justify-center">
-                    <i class="fas fa-image text-gray-400 text-4xl"></i>
+                <div class="w-full h-64 bg-gradient-to-br from-primary/10 to-accent/10 rounded-t-lg flex items-center justify-center">
+                    <i class="fas fa-box text-primary text-5xl"></i>
                 </div>
-                @endif
             </a>
             
             <div class="p-4">
@@ -113,13 +109,9 @@
         @foreach($recentProducts as $product)
         <div class="bg-white rounded-lg shadow hover:shadow-xl transition group">
             <a href="{{ storefront_route('product', $product->slug) }}">
-                @if($product->images->first())
-                <img src="{{ $product->images->first()->image_url }}" alt="{{ $product->name }}" class="w-full h-64 object-cover rounded-t-lg">
-                @else
-                <div class="w-full h-64 bg-gray-200 rounded-t-lg flex items-center justify-center">
-                    <i class="fas fa-image text-gray-400 text-4xl"></i>
+                <div class="w-full h-64 bg-gradient-to-br from-accent/10 to-secondary/10 rounded-t-lg flex items-center justify-center">
+                    <i class="fas fa-box text-accent text-5xl"></i>
                 </div>
-                @endif
             </a>
             
             <div class="p-4">
