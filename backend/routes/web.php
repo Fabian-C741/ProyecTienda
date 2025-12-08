@@ -42,7 +42,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('categories', CategoryWebController::class)->except(['show']);
     
     // Coupons CRUD
-    Route::post('/coupons/validate', [CouponWebController::class, 'validate'])->name('coupons.validate');
+    Route::post('/coupons/validate', [CouponWebController::class, 'validateCoupon'])->name('coupons.validate');
     Route::resource('coupons', CouponWebController::class)->except(['show']);
     
     // Orders Management
