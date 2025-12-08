@@ -45,7 +45,7 @@
                     Cambiar Email de Acceso
                 </h4>
                 <div class="mb-4 p-3 bg-blue-50 rounded text-sm">
-                    <strong>Email actual:</strong> {{ Auth::user()->email }}
+                    <strong>Email actual:</strong> {{ Auth::check() ? Auth::user()->email : 'No autenticado' }}
                 </div>
                 <form action="{{ route('admin.settings.update-email') }}" method="POST">
                     @csrf
