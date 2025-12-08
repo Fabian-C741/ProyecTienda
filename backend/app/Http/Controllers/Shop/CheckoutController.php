@@ -143,7 +143,7 @@ class CheckoutController extends Controller
     {
         // Obtener configuración de Mercado Pago del tenant
         $paymentGateway = TenantPaymentGateway::where('tenant_id', $order->tenant_id)
-            ->where('gateway', 'mercadopago')
+            ->where('gateway_name', 'mercadopago')
             ->where('is_active', true)
             ->first();
 
