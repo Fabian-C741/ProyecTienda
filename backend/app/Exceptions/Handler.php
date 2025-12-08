@@ -27,4 +27,20 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /**
+     * Render an exception into an HTTP response.
+     */
+    public function render($request, Throwable $exception)
+    {
+        // Manejar error 419 (CSRF token mismatch) de forma amigable
+        if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
+            return redirect()
+                ->back()
+                ->withInput($request->except('password', '_token'))
+                ->with('error', 'Tu sesión ha expirado. Por favor, intenta de nuevo.');
+        }
+
+        return parent::render($request, $exception);
+    }
 }
