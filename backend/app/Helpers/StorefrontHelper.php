@@ -6,7 +6,19 @@ if (!function_exists('storefront_route')) {
      */
     function storefront_route($name, $parameters = [])
     {
-        $tenant = app('tenant') ?? view()->shared('tenant') ?? null;
+        // Intentar obtener tenant desde diferentes fuentes
+        $tenant = null;
+        
+        // 1. Desde view (compartido por el controller)
+        $shared = view()->getShared();
+        if (isset($shared['tenant'])) {
+            $tenant = $shared['tenant'];
+        }
+        
+        // 2. Desde app container (middleware subdomain)
+        if (!$tenant && app()->bound('tenant')) {
+            $tenant = app('tenant');
+        }
         
         if (!$tenant) {
             throw new \Exception('Tenant not found for storefront route generation');
