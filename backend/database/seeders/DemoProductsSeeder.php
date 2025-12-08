@@ -101,6 +101,7 @@ class DemoProductsSeeder extends Seeder
                     'tenant_id' => $tenant->id,
                     'category_id' => $category->id,
                     'name' => $prod['name'],
+                    'sku' => strtoupper(str_replace('-', '', $prod['slug'])),
                     'description' => $prod['description'],
                     'price' => $prod['price'],
                     'stock' => $prod['stock'],
