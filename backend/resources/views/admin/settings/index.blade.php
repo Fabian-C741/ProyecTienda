@@ -30,46 +30,79 @@
 @endif
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <!-- Cambiar Contraseña (Siempre visible para debug) -->
+    <!-- Cambiar Email y Contraseña del Super Admin -->
     <div class="bg-white rounded-lg shadow-md p-6 md:col-span-2">
-        <h3 class="text-xl font-semibold mb-4 flex items-center">
-            <i class="fas fa-key text-blue-600 mr-2"></i>
-            Cambiar Contraseña del Super Admin
+        <h3 class="text-xl font-semibold mb-6 flex items-center">
+            <i class="fas fa-user-shield text-blue-600 mr-2"></i>
+            Credenciales del Super Admin
         </h3>
         
-        <!-- Info de Debug -->
-        <div class="mb-4 p-3 bg-gray-100 rounded text-sm">
-            <strong>Debug:</strong> 
-            Usuario: {{ Auth::check() ? Auth::user()->email : 'No autenticado' }} | 
-            Role: {{ Auth::check() ? (Auth::user()->role ?? 'NULL') : 'N/A' }}
-        </div>
-
-        <form action="{{ route('admin.settings.update-password') }}" method="POST" class="max-w-2xl">
-            @csrf
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-gray-700 font-semibold mb-2">Contraseña Actual</label>
-                    <input type="password" name="current_password" required 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                           placeholder="••••••••">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Cambiar Email -->
+            <div class="border-r lg:pr-6">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-envelope text-green-600 mr-2"></i>
+                    Cambiar Email de Acceso
+                </h4>
+                <div class="mb-4 p-3 bg-blue-50 rounded text-sm">
+                    <strong>Email actual:</strong> {{ Auth::user()->email }}
                 </div>
-                <div>
-                    <label class="block text-gray-700 font-semibold mb-2">Nueva Contraseña</label>
-                    <input type="password" name="new_password" required 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                           placeholder="••••••••">
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-semibold mb-2">Confirmar Nueva</label>
-                    <input type="password" name="new_password_confirmation" required 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                           placeholder="••••••••">
-                </div>
+                <form action="{{ route('admin.settings.update-email') }}" method="POST">
+                    @csrf
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Nuevo Email</label>
+                            <input type="email" name="new_email" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                   placeholder="nuevo@email.com">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Confirmar con Contraseña</label>
+                            <input type="password" name="current_password" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                   placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg">
+                            <i class="fas fa-save mr-2"></i>Actualizar Email
+                        </button>
+                    </div>
+                </form>
             </div>
-            <button type="submit" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">
-                <i class="fas fa-save mr-2"></i>Actualizar Contraseña
-            </button>
-        </form>
+
+            <!-- Cambiar Contraseña -->
+            <div class="lg:pl-6">
+                <h4 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-key text-orange-600 mr-2"></i>
+                    Cambiar Contraseña
+                </h4>
+                <form action="{{ route('admin.settings.update-password') }}" method="POST">
+                    @csrf
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Contraseña Actual</label>
+                            <input type="password" name="current_password" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                   placeholder="••••••••">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Nueva Contraseña</label>
+                            <input type="password" name="new_password" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                   placeholder="••••••••">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Confirmar Nueva</label>
+                            <input type="password" name="new_password_confirmation" required 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                   placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg">
+                            <i class="fas fa-save mr-2"></i>Actualizar Contraseña
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- Caché -->

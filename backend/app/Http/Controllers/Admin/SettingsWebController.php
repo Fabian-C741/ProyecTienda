@@ -60,4 +60,38 @@ class SettingsWebController extends Controller
             return back()->with('error', 'Error al actualizar contraseña: ' . $e->getMessage());
         }
     }
+
+    public function updateEmail(Request $request)
+    {
+        try {
+            // Verificar que sea super admin
+            if (!Auth::check() || Auth::user()->role !== 'admin') {
+                return back()->with('error', 'No tienes permisos para cambiar el email');
+            }
+
+            $request->validate([
+                'current_password' => 'required',
+                'new_email' => 'required|email|unique:users,email,' . Auth::id(),
+            ], [
+                'current_password.required' => 'La contraseña es requerida para confirmar el cambio',
+                'new_email.required' => 'El nuevo email es requerido',
+                'new_email.email' => 'El formato del email no es válido',
+                'new_email.unique' => 'Este email ya está en uso',
+            ]);
+
+            // Verificar contraseña actual
+            if (!Hash::check($request->current_password, Auth::user()->password)) {
+                return back()->with('error', 'La contraseña es incorrecta');
+            }
+
+            // Actualizar email
+            Auth::user()->update([
+                'email' => $request->new_email
+            ]);
+
+            return back()->with('success', 'Email actualizado exitosamente');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al actualizar email: ' . $e->getMessage());
+        }
+    }
 }
