@@ -57,11 +57,12 @@ Route::domain('{subdomain}.' . config('app.main_domain', 'ingreso-tienda.kcrsf.c
 
 // Storefront Routes alternativas (para desarrollo local sin subdominios)
 Route::prefix('tienda')->name('storefront.alt.')->group(function () {
-    Route::get('/{slug}', [StorefrontController::class, 'index'])->name('home');
+    Route::get('/{slug}', [StorefrontController::class, 'home'])->name('home');
     Route::get('/{slug}/productos', [StorefrontController::class, 'products'])->name('products');
-    Route::get('/{slug}/producto/{productSlug}', [StorefrontController::class, 'product'])->name('product');
     Route::get('/{slug}/nosotros', [StorefrontController::class, 'about'])->name('about');
     Route::get('/{slug}/contacto', [StorefrontController::class, 'contact'])->name('contact');
+    Route::get('/{slug}/producto/{productSlug}', [StorefrontController::class, 'product'])->name('product');
+    Route::get('/{slug}/pagina/{pageSlug}', [StorefrontController::class, 'page'])->name('page');
 });
 
 // Authentication Routes
