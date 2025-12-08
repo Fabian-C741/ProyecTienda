@@ -53,6 +53,12 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    // Mostrar formulario de login para admin/tenant
+    public function showAdminLogin()
+    {
+        return view('auth.admin-login');
+    }
+
     // Procesar login
     public function login(Request $request)
     {

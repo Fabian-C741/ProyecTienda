@@ -43,6 +43,8 @@ Route::get('/producto/{slug}', [ShopProductController::class, 'show'])->name('sh
 Route::get('/registro', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/registro', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/admin/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
+Route::get('/tenant/login', [AuthController::class, 'showAdminLogin'])->name('tenant.login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
