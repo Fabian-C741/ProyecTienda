@@ -12,7 +12,7 @@ class TenantPaymentGateway extends Model
 
     protected $fillable = [
         'tenant_id',
-        'gateway',
+        'gateway_name',
         'is_active',
         'public_key',
         'access_token',
@@ -65,6 +65,6 @@ class TenantPaymentGateway extends Model
 
     public function scopeMercadoPago($query)
     {
-        return $query->where('gateway', 'mercadopago');
+        return $query->where('gateway_name', 'mercadopago');
     }
 }
