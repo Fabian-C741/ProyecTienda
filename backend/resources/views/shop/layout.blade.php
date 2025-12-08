@@ -70,9 +70,39 @@
                         <i class="fas fa-th-large mr-1"></i>Productos
                     </a>
                     
-                    <a href="#" class="text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-user mr-1"></i>Cuenta
+                    @auth
+                    <div x-data="{ open: false }" class="relative">
+                        <button @click="open = !open" class="flex items-center text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-user mr-1"></i>
+                            <span class="hidden md:inline">{{ Auth::user()->name }}</span>
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        <div x-show="open" @click.away="open = false" x-cloak
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-box mr-2"></i>Mis Pedidos
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user-cog mr-2"></i>Mi Cuenta
+                            </a>
+                            <hr class="my-2">
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    @else
+                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-sign-in-alt mr-1"></i>
+                        <span class="hidden md:inline">Iniciar Sesión</span>
                     </a>
+                    <a href="{{ route('register') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 hidden md:block">
+                        <i class="fas fa-user-plus mr-1"></i>Registro
+                    </a>
+                    @endauth
 
                     <!-- Cart -->
                     <a href="{{ route('cart.index') }}" class="relative text-gray-700 hover:text-blue-600">

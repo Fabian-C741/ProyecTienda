@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Tenant extends Model
 {
@@ -16,23 +17,33 @@ class Tenant extends Model
         'slug',
         'domain',
         'logo',
+        'banner',
         'description',
         'email',
         'phone',
-        'settings',
-        'is_active',
-        'trial_ends_at',
+        'address',
+        'status',
+        'commission_rate',
     ];
 
     protected $casts = [
-        'settings' => 'array',
-        'is_active' => 'boolean',
-        'trial_ends_at' => 'datetime',
+        'commission_rate' => 'decimal:2',
     ];
 
+    // Relaciones
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    public function admin()
+    {
+        return $this->hasOne(User::class)->where('role', 'tenant_admin');
+    }
+
+    public function customers()
+    {
+        return $this->hasMany(User::class)->where('role', 'customer');
     }
 
     public function products(): HasMany
@@ -50,14 +61,46 @@ class Tenant extends Model
         return $this->hasMany(Category::class);
     }
 
-    public function paymentGateways(): HasMany
+    public function settings(): HasOne
     {
-        return $this->hasMany(PaymentGateway::class);
+        return $this->hasOne(TenantSetting::class);
     }
 
+    public function paymentGateways(): HasMany
+    {
+        return $this->hasMany(TenantPaymentGateway::class);
+    }
+
+    public function coupons(): HasMany
+    {
+        return $this->hasMany(Coupon::class);
+    }
+
+    // Scopes
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('status', 'active');
+    }
+
+    // Atributos computados
+    public function getUrlAttribute()
+    {
+        if ($this->domain) {
+            return 'https://' . $this->domain;
+        }
+        return url('/shop/' . $this->slug);
+    }
+
+    public function getTotalSalesAttribute()
+    {
+        return $this->orders()
+            ->whereIn('status', ['delivered'])
+            ->sum('total');
+    }
+
+    public function getCommissionAmountAttribute()
+    {
+        return ($this->total_sales * $this->commission_rate) / 100;
     }
 
     public function getRouteKeyName(): string

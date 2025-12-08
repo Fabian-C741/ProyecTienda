@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Shop\HomeController;
 use App\Http\Controllers\Shop\ProductController as ShopProductController;
 use App\Http\Controllers\Shop\CartController;
+use App\Http\Controllers\Shop\CheckoutController;
+use App\Http\Controllers\Auth\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,12 +35,28 @@ Route::get('/productos/buscar', [ShopProductController::class, 'search'])->name(
 Route::get('/categoria/{slug}', [ShopProductController::class, 'category'])->name('shop.category');
 Route::get('/producto/{slug}', [ShopProductController::class, 'show'])->name('shop.product');
 
+// Authentication Routes
+Route::get('/registro', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/registro', [AuthController::class, 'register']);
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 // Cart Routes
 Route::get('/carrito', [CartController::class, 'index'])->name('cart.index');
 Route::post('/carrito/agregar/{product}', [CartController::class, 'add'])->name('cart.add');
 Route::put('/carrito/actualizar/{product}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/carrito/eliminar/{product}', [CartController::class, 'remove'])->name('cart.remove');
 Route::delete('/carrito/vaciar', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/carrito/cupon', [CartController::class, 'applyCoupon'])->name('cart.coupon.apply');
+Route::delete('/carrito/cupon', [CartController::class, 'removeCoupon'])->name('cart.coupon.remove');
+
+// Checkout Routes (require authentication)
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/procesar', [CheckoutController::class, 'process'])->name('checkout.process');
+    Route::get('/pedido/exito/{order}', [CheckoutController::class, 'success'])->name('order.success');
+});
 
 // Admin Panel Routes
 Route::prefix('admin')->name('admin.')->group(function () {
