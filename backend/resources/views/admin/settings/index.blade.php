@@ -30,13 +30,20 @@
 @endif
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <!-- Cambiar Contraseña (Solo Super Admin) -->
-    @if(Auth::check() && Auth::user()->role === 'admin')
+    <!-- Cambiar Contraseña (Siempre visible para debug) -->
     <div class="bg-white rounded-lg shadow-md p-6 md:col-span-2">
         <h3 class="text-xl font-semibold mb-4 flex items-center">
             <i class="fas fa-key text-blue-600 mr-2"></i>
             Cambiar Contraseña del Super Admin
         </h3>
+        
+        <!-- Info de Debug -->
+        <div class="mb-4 p-3 bg-gray-100 rounded text-sm">
+            <strong>Debug:</strong> 
+            Usuario: {{ Auth::check() ? Auth::user()->email : 'No autenticado' }} | 
+            Role: {{ Auth::check() ? (Auth::user()->role ?? 'NULL') : 'N/A' }}
+        </div>
+
         <form action="{{ route('admin.settings.update-password') }}" method="POST" class="max-w-2xl">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -64,7 +71,6 @@
             </button>
         </form>
     </div>
-    @endif
 
     <!-- Caché -->
     <div class="bg-white rounded-lg shadow-md p-6">

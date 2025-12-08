@@ -11,24 +11,28 @@ class CouponWebController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Coupon::query();
-        
-        if ($request->filled('search')) {
-            $query->where('code', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+        try {
+            $query = Coupon::query();
+            
+            if ($request->filled('search')) {
+                $query->where('code', 'like', '%' . $request->search . '%')
+                      ->orWhere('description', 'like', '%' . $request->search . '%');
+            }
+            
+            if ($request->filled('status')) {
+                $query->where('is_active', $request->status == 'active');
+            }
+            
+            if ($request->filled('type')) {
+                $query->where('type', $request->type);
+            }
+            
+            $coupons = $query->latest()->paginate(15);
+            
+            return view('admin.coupons.index', compact('coupons'));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al cargar cupones: ' . $e->getMessage());
         }
-        
-        if ($request->filled('status')) {
-            $query->where('is_active', $request->status == 'active');
-        }
-        
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
-        }
-        
-        $coupons = $query->latest()->paginate(15);
-        
-        return view('admin.coupons.index', compact('coupons'));
     }
 
     public function create()

@@ -29,10 +29,11 @@ class SettingsWebController extends Controller
 
     public function updatePassword(Request $request)
     {
-        // Verificar que sea super admin
-        if (Auth::user()->role !== 'admin') {
-            return back()->with('error', 'No tienes permisos para cambiar la contraseña');
-        }
+        try {
+            // Verificar que sea super admin
+            if (!Auth::check() || Auth::user()->role !== 'admin') {
+                return back()->with('error', 'No tienes permisos para cambiar la contraseña');
+            }
 
         $request->validate([
             'current_password' => 'required',
@@ -55,5 +56,8 @@ class SettingsWebController extends Controller
         ]);
 
         return back()->with('success', 'Contraseña actualizada exitosamente');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al actualizar contraseña: ' . $e->getMessage());
+        }
     }
 }
