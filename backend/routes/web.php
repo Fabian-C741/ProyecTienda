@@ -20,6 +20,7 @@ use App\Http\Controllers\Tenant\DashboardController as TenantDashboardController
 use App\Http\Controllers\Tenant\ProductController as TenantProductController;
 use App\Http\Controllers\Tenant\OrderController as TenantOrderController;
 use App\Http\Controllers\Tenant\SettingsController as TenantSettingsController;
+use App\Http\Controllers\Storefront\StorefrontController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,15 @@ Route::get('/productos', [ShopProductController::class, 'index'])->name('shop.in
 Route::get('/productos/buscar', [ShopProductController::class, 'search'])->name('shop.search');
 Route::get('/categoria/{slug}', [ShopProductController::class, 'category'])->name('shop.category');
 Route::get('/producto/{slug}', [ShopProductController::class, 'show'])->name('shop.product');
+
+// Storefront Routes (Tiendas individuales de cada vendedor)
+Route::prefix('tienda')->name('storefront.')->group(function () {
+    Route::get('/{slug}', [StorefrontController::class, 'index'])->name('home');
+    Route::get('/{slug}/productos', [StorefrontController::class, 'products'])->name('products');
+    Route::get('/{slug}/producto/{productSlug}', [StorefrontController::class, 'product'])->name('product');
+    Route::get('/{slug}/nosotros', [StorefrontController::class, 'about'])->name('about');
+    Route::get('/{slug}/contacto', [StorefrontController::class, 'contact'])->name('contact');
+});
 
 // Authentication Routes
 Route::get('/registro', [AuthController::class, 'showRegister'])->name('register');
