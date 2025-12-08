@@ -107,7 +107,7 @@
         <div class="container mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
                 <!-- Logo -->
-                <a href="{{ route('storefront.home') }}" class="flex items-center gap-3">
+                <a href="{{ storefront_route('home') }}" class="flex items-center gap-3">
                     @if($tenant->logo)
                     <img src="{{ $tenant->logo }}" alt="{{ $tenant->name }}" class="h-12">
                     @endif
@@ -121,16 +121,16 @@
                 
                 <!-- Navigation -->
                 <nav class="hidden md:flex gap-6">
-                    <a href="{{ route('storefront.home') }}" class="text-gray-700 hover:text-primary font-medium">
+                    <a href="{{ storefront_route('home') }}" class="text-gray-700 hover:text-primary font-medium">
                         Inicio
                     </a>
-                    <a href="{{ route('storefront.products') }}" class="text-gray-700 hover:text-primary font-medium">
+                    <a href="{{ storefront_route('products') }}" class="text-gray-700 hover:text-primary font-medium">
                         Productos
                     </a>
-                    <a href="{{ route('storefront.about') }}" class="text-gray-700 hover:text-primary font-medium">
+                    <a href="{{ storefront_route('about') }}" class="text-gray-700 hover:text-primary font-medium">
                         Nosotros
                     </a>
-                    <a href="{{ route('storefront.contact') }}" class="text-gray-700 hover:text-primary font-medium">
+                    <a href="{{ storefront_route('contact') }}" class="text-gray-700 hover:text-primary font-medium">
                         Contacto
                     </a>
                 </nav>
@@ -177,9 +177,9 @@
                 <div>
                     <h4 class="font-bold mb-4">Enlaces</h4>
                     <ul class="space-y-2">
-                        <li><a href="{{ route('storefront.products') }}" class="text-gray-400 hover:text-white">Productos</a></li>
-                        <li><a href="{{ route('storefront.about') }}" class="text-gray-400 hover:text-white">Nosotros</a></li>
-                        <li><a href="{{ route('storefront.contact') }}" class="text-gray-400 hover:text-white">Contacto</a></li>
+                        <li><a href="{{ storefront_route('products') }}" class="text-gray-400 hover:text-white">Productos</a></li>
+                        <li><a href="{{ storefront_route('about') }}" class="text-gray-400 hover:text-white">Nosotros</a></li>
+                        <li><a href="{{ storefront_route('contact') }}" class="text-gray-400 hover:text-white">Contacto</a></li>
                     </ul>
                 </div>
                 

@@ -1,0 +1,32 @@
+<?php
+
+if (!function_exists('storefront_route')) {
+    /**
+     * Genera URL para rutas de storefront (compatible con subdomain y slug)
+     */
+    function storefront_route($name, $parameters = [])
+    {
+        $tenant = app('tenant') ?? view()->shared('tenant') ?? null;
+        
+        if (!$tenant) {
+            throw new \Exception('Tenant not found for storefront route generation');
+        }
+
+        // Si estamos en un subdominio, usar rutas de subdomain
+        $host = request()->getHost();
+        $mainDomain = config('app.main_domain', 'ingreso-tienda.kcrsf.com');
+        
+        // Verificar si es un subdominio (no es el dominio principal ni www)
+        $isSubdomain = $host !== $mainDomain && 
+                      $host !== 'www.' . $mainDomain && 
+                      str_ends_with($host, '.' . $mainDomain);
+        
+        if ($isSubdomain) {
+            // Usar rutas de subdomain
+            return route('storefront.' . $name, $parameters);
+        } else {
+            // Usar rutas alternativas con slug
+            return route('storefront.alt.' . $name, array_merge(['slug' => $tenant->slug], $parameters));
+        }
+    }
+}
