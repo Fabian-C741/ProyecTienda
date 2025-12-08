@@ -197,107 +197,122 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// Gráfico de Ventas
-const salesCtx = document.getElementById('salesChart').getContext('2d');
-const salesData = @json($salesChart ?? []);
-const salesChart = new Chart(salesCtx, {
-    type: 'line',
-    data: {
-        labels: salesData.map(item => new Date(item.date).toLocaleDateString('es-ES', { month: 'short', day: 'numeric' })),
-        datasets: [{
-            label: 'Ventas ($)',
-            data: salesData.map(item => item.total),
-            borderColor: 'rgb(59, 130, 246)',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            tension: 0.4,
-            fill: true
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top'
-            }
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar que los canvas existen
+    const salesCanvas = document.getElementById('salesChart');
+    const ordersStatusCanvas = document.getElementById('ordersStatusChart');
+    const topProductsCanvas = document.getElementById('topProductsChart');
+    
+    if (!salesCanvas || !ordersStatusCanvas || !topProductsCanvas) {
+        console.error('Canvas elements not found');
+        return;
+    }
+
+    // Gráfico de Ventas
+    const salesCtx = salesCanvas.getContext('2d');
+    const salesData = @json($salesChart ?? []);
+    new Chart(salesCtx, {
+        type: 'line',
+        data: {
+            labels: salesData.map(item => {
+                const date = new Date(item.date);
+                return date.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
+            }),
+            datasets: [{
+                label: 'Ventas ($)',
+                data: salesData.map(item => parseFloat(item.total || 0)),
+                borderColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
         },
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    callback: function(value) {
-                        return '$' + value.toFixed(2);
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toFixed(2);
+                        }
                     }
                 }
             }
         }
-    }
-});
+    });
 
-// Gráfico de Estado de Órdenes
-const ordersStatusCtx = document.getElementById('ordersStatusChart').getContext('2d');
-const ordersStatusData = @json($ordersStatusChart ?? []);
-const ordersStatusChart = new Chart(ordersStatusCtx, {
-    type: 'doughnut',
-    data: {
-        labels: ordersStatusData.map(item => item.status.charAt(0).toUpperCase() + item.status.slice(1)),
-        datasets: [{
-            data: ordersStatusData.map(item => item.count),
-            backgroundColor: [
-                'rgba(34, 197, 94, 0.8)',
-                'rgba(234, 179, 8, 0.8)',
-                'rgba(59, 130, 246, 0.8)',
-                'rgba(239, 68, 68, 0.8)',
-                'rgba(168, 85, 247, 0.8)'
-            ],
-            borderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'right'
-            }
-        }
-    }
-});
-
-// Gráfico de Productos Más Vendidos
-const topProductsCtx = document.getElementById('topProductsChart').getContext('2d');
-const topProductsData = @json($topProductsChart ?? []);
-const topProductsChart = new Chart(topProductsCtx, {
-    type: 'bar',
-    data: {
-        labels: topProductsData.map(item => item.name.length > 20 ? item.name.substring(0, 20) + '...' : item.name),
-        datasets: [{
-            label: 'Ventas',
-            data: topProductsData.map(item => item.sales),
-            backgroundColor: 'rgba(168, 85, 247, 0.8)',
-            borderColor: 'rgb(168, 85, 247)',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        indexAxis: 'y',
-        plugins: {
-            legend: {
-                display: false
-            }
+    // Gráfico de Estado de Órdenes
+    const ordersStatusCtx = ordersStatusCanvas.getContext('2d');
+    const ordersStatusData = @json($ordersStatusChart ?? []);
+    new Chart(ordersStatusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ordersStatusData.map(item => item.status.charAt(0).toUpperCase() + item.status.slice(1)),
+            datasets: [{
+                data: ordersStatusData.map(item => parseInt(item.count || 0)),
+                backgroundColor: [
+                    'rgba(34, 197, 94, 0.8)',
+                    'rgba(234, 179, 8, 0.8)',
+                    'rgba(59, 130, 246, 0.8)',
+                    'rgba(239, 68, 68, 0.8)',
+                    'rgba(168, 85, 247, 0.8)'
+                ],
+                borderWidth: 2
+            }]
         },
-        scales: {
-            x: {
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 1
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right'
                 }
             }
         }
-    }
+    });
+
+    // Gráfico de Productos Más Vendidos
+    const topProductsCtx = topProductsCanvas.getContext('2d');
+    const topProductsData = @json($topProductsChart ?? []);
+    new Chart(topProductsCtx, {
+        type: 'bar',
+        data: {
+            labels: topProductsData.map(item => item.name.length > 20 ? item.name.substring(0, 20) + '...' : item.name),
+            datasets: [{
+                label: 'Ventas',
+                data: topProductsData.map(item => parseInt(item.sales || 0)),
+                backgroundColor: 'rgba(168, 85, 247, 0.8)',
+                borderColor: 'rgb(168, 85, 247)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
 });
 </script>
 @endsection
