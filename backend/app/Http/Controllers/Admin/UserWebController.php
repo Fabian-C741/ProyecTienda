@@ -37,6 +37,35 @@ class UserWebController extends Controller
         return view('admin.users.show', compact('user'));
     }
 
+    public function create()
+    {
+        return view('admin.users.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+            'role' => 'required|in:admin,customer',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:100',
+            'state' => 'nullable|string|max:100',
+            'country' => 'nullable|string|max:100',
+            'postal_code' => 'nullable|string|max:20',
+        ]);
+
+        $validated['password'] = Hash::make($validated['password']);
+        $validated['is_active'] = true;
+
+        User::create($validated);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Usuario creado exitosamente');
+    }
+
     public function edit(User $user)
     {
         return view('admin.users.edit', compact('user'));

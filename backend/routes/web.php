@@ -51,11 +51,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::put('/orders/{order}/status', [OrderWebController::class, 'updateStatus'])->name('orders.updateStatus');
     
     // Users Management
-    Route::get('/users', [UserWebController::class, 'index'])->name('users.index');
-    Route::get('/users/{user}', [UserWebController::class, 'show'])->name('users.show');
-    Route::get('/users/{user}/edit', [UserWebController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [UserWebController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [UserWebController::class, 'destroy'])->name('users.destroy');
+    Route::resource('users', UserWebController::class)->except(['create', 'store']);
+    Route::get('/users/create', [UserWebController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserWebController::class, 'store'])->name('users.store');
     
     // Reviews Management
     Route::get('/reviews', [ReviewWebController::class, 'index'])->name('reviews.index');
