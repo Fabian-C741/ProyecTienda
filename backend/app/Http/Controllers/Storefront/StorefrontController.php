@@ -11,13 +11,19 @@ use Illuminate\Http\Request;
 class StorefrontController extends Controller
 {
     /**
+     * Obtener tenant desde el middleware
+     */
+    private function getTenant()
+    {
+        return app('tenant');
+    }
+
+    /**
      * Mostrar la página principal de la tienda del tenant
      */
-    public function index($slug)
+    public function home()
     {
-        $tenant = Tenant::where('slug', $slug)
-            ->where('status', 'active')
-            ->firstOrFail();
+        $tenant = $this->getTenant();
 
         // Productos destacados del tenant
         $featuredProducts = Product::where('tenant_id', $tenant->id)
@@ -55,11 +61,9 @@ class StorefrontController extends Controller
     /**
      * Listado de productos de la tienda
      */
-    public function products($slug, Request $request)
+    public function products(Request $request)
     {
-        $tenant = Tenant::where('slug', $slug)
-            ->where('status', 'active')
-            ->firstOrFail();
+        $tenant = $this->getTenant();
 
         $query = Product::where('tenant_id', $tenant->id)
             ->where('is_active', true)
@@ -108,11 +112,9 @@ class StorefrontController extends Controller
     /**
      * Detalle de producto
      */
-    public function product($slug, $productSlug)
+    public function product($productSlug)
     {
-        $tenant = Tenant::where('slug', $slug)
-            ->where('status', 'active')
-            ->firstOrFail();
+        $tenant = $this->getTenant();
 
         $product = Product::where('tenant_id', $tenant->id)
             ->where('slug', $productSlug)
@@ -135,11 +137,9 @@ class StorefrontController extends Controller
     /**
      * Página "Acerca de"
      */
-    public function about($slug)
+    public function about()
     {
-        $tenant = Tenant::where('slug', $slug)
-            ->where('status', 'active')
-            ->firstOrFail();
+        $tenant = $this->getTenant();
 
         return view('storefront.about', compact('tenant'));
     }
@@ -147,12 +147,25 @@ class StorefrontController extends Controller
     /**
      * Contacto
      */
-    public function contact($slug)
+    public function contact()
     {
-        $tenant = Tenant::where('slug', $slug)
-            ->where('status', 'active')
-            ->firstOrFail();
+        $tenant = $this->getTenant();
 
         return view('storefront.contact', compact('tenant'));
+    }
+
+    /**
+     * Página personalizada
+     */
+    public function page($slug)
+    {
+        $tenant = $this->getTenant();
+        
+        $page = $tenant->pages()
+            ->where('slug', $slug)
+            ->where('is_published', true)
+            ->firstOrFail();
+
+        return view('storefront.page', compact('tenant', 'page'));
     }
 }

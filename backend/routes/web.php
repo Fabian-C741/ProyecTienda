@@ -33,15 +33,30 @@ use App\Http\Controllers\Storefront\StorefrontController;
 |
 */
 
-// Public Shop Routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/productos', [ShopProductController::class, 'index'])->name('shop.index');
-Route::get('/productos/buscar', [ShopProductController::class, 'search'])->name('shop.search');
-Route::get('/categoria/{slug}', [ShopProductController::class, 'category'])->name('shop.category');
-Route::get('/producto/{slug}', [ShopProductController::class, 'show'])->name('shop.product');
+// Public Shop Routes (dominio principal)
+Route::domain(config('app.main_domain', 'ingreso-tienda.kcrsf.com'))->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/productos', [ShopProductController::class, 'index'])->name('shop.index');
+    Route::get('/productos/buscar', [ShopProductController::class, 'search'])->name('shop.search');
+    Route::get('/categoria/{slug}', [ShopProductController::class, 'category'])->name('shop.category');
+    Route::get('/producto/{slug}', [ShopProductController::class, 'show'])->name('shop.product');
+});
 
-// Storefront Routes (Tiendas individuales de cada vendedor)
-Route::prefix('tienda')->name('storefront.')->group(function () {
+// Storefront Routes (Subdominios de cada vendedor: {tenant}.ingreso-tienda.kcrsf.com)
+Route::domain('{subdomain}.' . config('app.main_domain', 'ingreso-tienda.kcrsf.com'))
+    ->middleware('subdomain.tenant')
+    ->name('storefront.')
+    ->group(function () {
+        Route::get('/', [StorefrontController::class, 'home'])->name('home');
+        Route::get('/productos', [StorefrontController::class, 'products'])->name('products');
+        Route::get('/producto/{productSlug}', [StorefrontController::class, 'product'])->name('product');
+        Route::get('/nosotros', [StorefrontController::class, 'about'])->name('about');
+        Route::get('/contacto', [StorefrontController::class, 'contact'])->name('contact');
+        Route::get('/pagina/{slug}', [StorefrontController::class, 'page'])->name('page');
+    });
+
+// Storefront Routes alternativas (para desarrollo local sin subdominios)
+Route::prefix('tienda')->name('storefront.alt.')->group(function () {
     Route::get('/{slug}', [StorefrontController::class, 'index'])->name('home');
     Route::get('/{slug}/productos', [StorefrontController::class, 'products'])->name('products');
     Route::get('/{slug}/producto/{productSlug}', [StorefrontController::class, 'product'])->name('product');
