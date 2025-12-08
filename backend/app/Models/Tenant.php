@@ -24,6 +24,8 @@ class Tenant extends Model
         'address',
         'status',
         'commission_rate',
+        'subdomain_created',
+        'subdomain_created_at',
         'primary_color',
         'secondary_color',
         'accent_color',
@@ -44,6 +46,8 @@ class Tenant extends Model
 
     protected $casts = [
         'commission_rate' => 'decimal:2',
+        'subdomain_created' => 'boolean',
+        'subdomain_created_at' => 'datetime',
     ];
 
     // Relaciones
