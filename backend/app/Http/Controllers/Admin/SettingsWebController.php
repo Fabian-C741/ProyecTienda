@@ -64,8 +64,8 @@ class SettingsWebController extends Controller
     public function updateEmail(Request $request)
     {
         try {
-            // Verificar que sea super admin
-            if (!Auth::check() || Auth::user()->role !== 'admin') {
+            // Verificar que sea super admin o admin
+            if (!Auth::check() || !in_array(Auth::user()->role, ['admin', 'super_admin'])) {
                 return back()->with('error', 'No tienes permisos para cambiar el email');
             }
 
