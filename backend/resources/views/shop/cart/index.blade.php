@@ -74,14 +74,55 @@
             <div class="bg-white rounded-lg shadow-md p-6 sticky top-20">
                 <h2 class="text-2xl font-bold mb-6">Resumen del Pedido</h2>
                 
+                <!-- Cupón de Descuento -->
+                <div class="mb-6">
+                    @if(session('applied_coupon'))
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-green-700 font-medium">
+                                <i class="fas fa-tag mr-1"></i>
+                                Cupón: {{ session('applied_coupon') }}
+                            </span>
+                            <form action="{{ route('cart.coupon.remove') }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-800">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    @else
+                    <form action="{{ route('cart.coupon.apply') }}" method="POST">
+                        @csrf
+                        <div class="flex gap-2">
+                            <input type="text" name="coupon_code" placeholder="Código de cupón" required
+                                   class="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                            <button type="submit" 
+                                    class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-sm">
+                                Aplicar
+                            </button>
+                        </div>
+                    </form>
+                    @endif
+                </div>
+
                 <div class="space-y-3 mb-6">
                     <div class="flex justify-between">
                         <span class="text-gray-600">Subtotal</span>
-                        <span class="font-semibold">${{ number_format($total, 2) }}</span>
+                        <span class="font-semibold">${{ number_format($subtotal ?? $total, 2) }}</span>
                     </div>
+                    
+                    @if(isset($discount) && $discount > 0)
+                    <div class="flex justify-between text-green-600">
+                        <span>Descuento</span>
+                        <span class="font-semibold">-${{ number_format($discount, 2) }}</span>
+                    </div>
+                    @endif
+                    
                     <div class="flex justify-between">
                         <span class="text-gray-600">Envío</span>
-                        <span class="font-semibold">Gratis</span>
+                        <span class="font-semibold text-green-600">Gratis</span>
                     </div>
                     <div class="border-t pt-3 flex justify-between text-xl font-bold">
                         <span>Total</span>
