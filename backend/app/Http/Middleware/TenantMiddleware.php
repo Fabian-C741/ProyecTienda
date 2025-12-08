@@ -9,16 +9,28 @@ class TenantMiddleware
 {
     /**
      * Handle an incoming request.
+     * Ensures only tenant_admin users can access tenant routes
      */
     public function handle(Request $request, Closure $next)
     {
-        $tenantId = $request->header('X-Tenant-ID') ?? $request->get('tenant_id');
-        
-        if ($tenantId) {
-            // Guardar el tenant_id en el request para uso posterior
-            $request->merge(['current_tenant_id' => $tenantId]);
+        // Check if user is authenticated
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'Debes iniciar sesión para acceder.');
         }
-
+        
+        $user = auth()->user();
+        
+        // Check if user has tenant_admin role
+        if ($user->role !== 'tenant_admin') {
+            abort(403, 'No tienes permisos para acceder al panel de vendedor.');
+        }
+        
+        // Check if user has a tenant assigned
+        if (!$user->tenant_id) {
+            abort(403, 'No tienes una tienda asignada. Contacta al administrador.');
+        }
+        
         return $next($request);
     }
 }
+
