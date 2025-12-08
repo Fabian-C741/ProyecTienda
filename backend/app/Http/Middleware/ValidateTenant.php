@@ -92,14 +92,19 @@ class ValidateTenant
     }
 
     /**
-     * Validar formato de tenant_id (UUID v4)
+     * Validar formato de tenant_id (UUID v4 o entero)
      * 
      * @param string $tenantId
      * @return bool
      */
     private function isValidTenantId(string $tenantId): bool
     {
-        // Validar que sea un UUID válido
+        // Aceptar números enteros (IDs incrementales)
+        if (is_numeric($tenantId) && intval($tenantId) > 0) {
+            return true;
+        }
+        
+        // O validar que sea un UUID válido
         $pattern = '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
         return preg_match($pattern, $tenantId) === 1;
     }
