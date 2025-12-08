@@ -97,7 +97,7 @@ class CouponWebController extends Controller
                          ->with('success', 'Cupón eliminado exitosamente');
     }
 
-    public function validate(Request $request)
+    public function validateCoupon(Request $request)
     {
         $request->validate([
             'code' => 'required|string',
