@@ -16,6 +16,10 @@ use App\Http\Controllers\Shop\ProductController as ShopProductController;
 use App\Http\Controllers\Shop\CartController;
 use App\Http\Controllers\Shop\CheckoutController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Tenant\DashboardController as TenantDashboardController;
+use App\Http\Controllers\Tenant\ProductController as TenantProductController;
+use App\Http\Controllers\Tenant\OrderController as TenantOrderController;
+use App\Http\Controllers\Tenant\SettingsController as TenantSettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,4 +110,25 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/settings/clear-cache', [SettingsWebController::class, 'clearCache'])->name('settings.clear-cache');
     Route::post('/settings/update-password', [SettingsWebController::class, 'updatePassword'])->name('settings.update-password');
     Route::post('/settings/update-email', [SettingsWebController::class, 'updateEmail'])->name('settings.update-email');
+});
+
+// Tenant Panel Routes (for vendors/tenant admins)
+Route::prefix('tenant')->middleware(['auth', 'tenant'])->name('tenant.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [TenantDashboardController::class, 'index'])->name('dashboard');
+    
+    // Products CRUD
+    Route::resource('products', TenantProductController::class);
+    
+    // Orders Management
+    Route::get('/orders', [TenantOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [TenantOrderController::class, 'show'])->name('orders.show');
+    Route::put('/orders/{order}/status', [TenantOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    
+    // Settings
+    Route::get('/settings', [TenantSettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings/store', [TenantSettingsController::class, 'updateStore'])->name('settings.updateStore');
+    Route::post('/settings/appearance', [TenantSettingsController::class, 'updateAppearance'])->name('settings.updateAppearance');
+    Route::post('/settings/mercadopago', [TenantSettingsController::class, 'updateMercadoPago'])->name('settings.updateMercadoPago');
+    Route::post('/settings/mercadopago/test', [TenantSettingsController::class, 'testMercadoPago'])->name('settings.testMercadoPago');
 });
