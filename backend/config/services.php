@@ -31,4 +31,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'cpanel' => [
+        'host' => env('CPANEL_HOST', 'br-asc-web1885.main-hosting.eu'),
+        'username' => env('CPANEL_USERNAME'),
+        'api_token' => env('CPANEL_API_TOKEN'),
+        'port' => env('CPANEL_PORT', 2083),
+        'root_domain' => env('APP_MAIN_DOMAIN', 'ingreso-tienda.kcrsf.com'),
+    ],
+
 ];
