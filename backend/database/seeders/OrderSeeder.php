@@ -21,7 +21,7 @@ class OrderSeeder extends Seeder
             return;
         }
 
-        $statuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
+        $statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 
         for ($i = 1; $i <= 15; $i++) {
             $customer = $customers->random();
