@@ -62,6 +62,7 @@ class OrderSeeder extends Seeder
                     'order_id' => $order->id,
                     'product_id' => $product->id,
                     'product_name' => $product->name,
+                    'product_sku' => $product->sku,
                     'quantity' => $quantity,
                     'price' => $price,
                     'subtotal' => $price * $quantity
