@@ -31,7 +31,7 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- Cambiar Contraseña (Solo Super Admin) -->
-    @if(Auth::user()->role === 'admin')
+    @if(Auth::check() && Auth::user()->role === 'admin')
     <div class="bg-white rounded-lg shadow-md p-6 md:col-span-2">
         <h3 class="text-xl font-semibold mb-4 flex items-center">
             <i class="fas fa-key text-blue-600 mr-2"></i>
