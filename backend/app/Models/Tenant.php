@@ -24,6 +24,22 @@ class Tenant extends Model
         'address',
         'status',
         'commission_rate',
+        'primary_color',
+        'secondary_color',
+        'accent_color',
+        'font_family',
+        'product_layout',
+        'products_per_page',
+        'hero_text',
+        'hero_button_text',
+        'hero_button_link',
+        'facebook_url',
+        'instagram_url',
+        'twitter_url',
+        'whatsapp_number',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
     ];
 
     protected $casts = [
@@ -69,6 +85,11 @@ class Tenant extends Model
     public function paymentGateways(): HasMany
     {
         return $this->hasMany(TenantPaymentGateway::class);
+    }
+
+    public function pages(): HasMany
+    {
+        return $this->hasMany(TenantPage::class);
     }
 
     public function coupons(): HasMany

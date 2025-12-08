@@ -1,0 +1,158 @@
+<?php
+
+namespace App\Http\Controllers\Storefront;
+
+use App\Http\Controllers\Controller;
+use App\Models\Tenant;
+use App\Models\Product;
+use App\Models\Category;
+use Illuminate\Http\Request;
+
+class StorefrontController extends Controller
+{
+    /**
+     * Mostrar la página principal de la tienda del tenant
+     */
+    public function index($slug)
+    {
+        $tenant = Tenant::where('slug', $slug)
+            ->where('status', 'active')
+            ->firstOrFail();
+
+        // Productos destacados del tenant
+        $featuredProducts = Product::where('tenant_id', $tenant->id)
+            ->where('is_active', true)
+            ->where('is_featured', true)
+            ->with('images', 'category')
+            ->take(8)
+            ->get();
+
+        // Productos recientes
+        $recentProducts = Product::where('tenant_id', $tenant->id)
+            ->where('is_active', true)
+            ->with('images', 'category')
+            ->latest()
+            ->take(12)
+            ->get();
+
+        // Categorías con productos
+        $categories = Category::whereHas('products', function($q) use ($tenant) {
+            $q->where('tenant_id', $tenant->id)
+              ->where('is_active', true);
+        })->withCount(['products' => function($q) use ($tenant) {
+            $q->where('tenant_id', $tenant->id)
+              ->where('is_active', true);
+        }])->get();
+
+        return view('storefront.home', compact(
+            'tenant',
+            'featuredProducts',
+            'recentProducts',
+            'categories'
+        ));
+    }
+
+    /**
+     * Listado de productos de la tienda
+     */
+    public function products($slug, Request $request)
+    {
+        $tenant = Tenant::where('slug', $slug)
+            ->where('status', 'active')
+            ->firstOrFail();
+
+        $query = Product::where('tenant_id', $tenant->id)
+            ->where('is_active', true)
+            ->with('images', 'category');
+
+        // Filtro por categoría
+        if ($request->category) {
+            $query->whereHas('category', function($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        // Búsqueda
+        if ($request->search) {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                  ->orWhere('description', 'like', "%{$request->search}%");
+            });
+        }
+
+        // Ordenamiento
+        switch ($request->sort) {
+            case 'price_asc':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'name':
+                $query->orderBy('name', 'asc');
+                break;
+            default:
+                $query->latest();
+        }
+
+        $products = $query->paginate(24);
+
+        $categories = Category::whereHas('products', function($q) use ($tenant) {
+            $q->where('tenant_id', $tenant->id)
+              ->where('is_active', true);
+        })->get();
+
+        return view('storefront.products', compact('tenant', 'products', 'categories'));
+    }
+
+    /**
+     * Detalle de producto
+     */
+    public function product($slug, $productSlug)
+    {
+        $tenant = Tenant::where('slug', $slug)
+            ->where('status', 'active')
+            ->firstOrFail();
+
+        $product = Product::where('tenant_id', $tenant->id)
+            ->where('slug', $productSlug)
+            ->where('is_active', true)
+            ->with('images', 'category', 'reviews.user')
+            ->firstOrFail();
+
+        // Productos relacionados de la misma categoría
+        $relatedProducts = Product::where('tenant_id', $tenant->id)
+            ->where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->where('is_active', true)
+            ->with('images')
+            ->take(4)
+            ->get();
+
+        return view('storefront.product-detail', compact('tenant', 'product', 'relatedProducts'));
+    }
+
+    /**
+     * Página "Acerca de"
+     */
+    public function about($slug)
+    {
+        $tenant = Tenant::where('slug', $slug)
+            ->where('status', 'active')
+            ->firstOrFail();
+
+        return view('storefront.about', compact('tenant'));
+    }
+
+    /**
+     * Contacto
+     */
+    public function contact($slug)
+    {
+        $tenant = Tenant::where('slug', $slug)
+            ->where('status', 'active')
+            ->firstOrFail();
+
+        return view('storefront.contact', compact('tenant'));
+    }
+}
