@@ -31,6 +31,7 @@ class OrderSeeder extends Seeder
             // Crear orden
             $order = Order::create([
                 'user_id' => $customer->id,
+                'order_number' => 'ORD-' . strtoupper(uniqid()),
                 'status' => $status,
                 'total' => 0, // Se calculará después
                 'subtotal' => 0,
