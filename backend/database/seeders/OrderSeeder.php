@@ -21,7 +21,7 @@ class OrderSeeder extends Seeder
             return;
         }
 
-        $statuses = ['pending', 'processing', 'completed', 'cancelled'];
+        $statuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
 
         for ($i = 1; $i <= 15; $i++) {
             $customer = $customers->random();
@@ -44,7 +44,7 @@ class OrderSeeder extends Seeder
                 'shipping_postal_code' => '10' . rand(100, 999),
                 'shipping_country' => 'País',
                 'payment_method' => ['Tarjeta de Crédito', 'PayPal', 'Transferencia'][rand(0, 2)],
-                'payment_status' => $status === 'completed' ? 'paid' : ($status === 'cancelled' ? 'refunded' : 'pending'),
+                'payment_status' => $status === 'delivered' ? 'paid' : ($status === 'cancelled' ? 'refunded' : 'pending'),
                 'created_at' => $orderDate,
                 'updated_at' => $orderDate
             ]);
