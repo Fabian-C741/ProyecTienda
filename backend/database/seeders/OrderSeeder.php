@@ -38,13 +38,11 @@ class OrderSeeder extends Seeder
                 'total' => 0, // Se calculará después
                 'subtotal' => 0,
                 'tax' => 0,
-                'shipping_address' => json_encode([
-                    'street' => 'Calle Principal ' . rand(100, 999),
-                    'city' => 'Ciudad ' . rand(1, 10),
-                    'state' => 'Estado ' . rand(1, 5),
-                    'zip' => '10' . rand(100, 999),
-                    'country' => 'País'
-                ]),
+                'shipping_address' => 'Calle Principal ' . rand(100, 999),
+                'shipping_city' => 'Ciudad ' . rand(1, 10),
+                'shipping_state' => 'Estado ' . rand(1, 5),
+                'shipping_postal_code' => '10' . rand(100, 999),
+                'shipping_country' => 'País',
                 'payment_method' => ['Tarjeta de Crédito', 'PayPal', 'Transferencia'][rand(0, 2)],
                 'payment_status' => $status === 'completed' ? 'paid' : ($status === 'cancelled' ? 'refunded' : 'pending'),
                 'created_at' => $orderDate,
