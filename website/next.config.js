@@ -2,10 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['via.placeholder.com', 'ingreso-tienda.kcrsf.com'],
+    domains: ['via.placeholder.com', process.env.NEXT_PUBLIC_DOMAIN || 'localhost'],
   },
   env: {
-    NEXT_PUBLIC_API_URL: 'https://ingreso-tienda.kcrsf.com/api/v1',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1',
   },
 }
 

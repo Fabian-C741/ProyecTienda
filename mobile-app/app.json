@@ -29,7 +29,7 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "apiUrl": "https://ingreso-tienda.kcrsf.com/api/v1"
+      "apiUrl": process.env.EXPO_PUBLIC_API_URL || "http://localhost:8000/api/v1"
     }
   }
 }

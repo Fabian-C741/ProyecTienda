@@ -12,6 +12,11 @@ vendor/
 *.md
 !README.md
 
+# Deployment scripts (contain sensitive info)
+deploy.bat
+deploy.sh
+*.deploy.*
+
 # Build outputs
 dist/
 build/

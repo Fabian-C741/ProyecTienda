@@ -1,7 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '../config/constants';
 
-const API_URL = 'https://ingreso-tienda.kcrsf.com/api/v1';
+// API_URL is imported from constants
 
 const api = axios.create({
   baseURL: API_URL,
