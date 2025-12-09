@@ -9,6 +9,8 @@ vendor/
 
 # Documentation (Private)
 .docs/
+*.md
+!README.md
 
 # Build outputs
 dist/
