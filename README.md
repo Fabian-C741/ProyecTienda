@@ -11,66 +11,6 @@ Tienda_online_multiplataformas/
 ├── website/             # Website público Next.js 14
 └── .docs/               # Documentación completa
 ```
-
-## 🚀 Componentes del Sistema
-
-### 1. 🔧 Backend API (Laravel 10)
-**Ubicación:** `backend/`  
-**URL Producción:** https://ingreso-tienda.kcrsf.com/api/v1
-
-**Características:**
-- ✅ API REST completa con Laravel 10.50.0
-- 🔐 Autenticación JWT con Laravel Sanctum
-- 👥 Sistema de roles y permisos (Spatie)
-- 🛒 Gestión de productos, categorías y carrito
-- 📦 Sistema de órdenes completo
-- 💳 5 métodos de pago integrados (Mercado Pago, Stripe, PayPal, etc.)
-- ⭐ Sistema de reviews con ratings
-- 📧 Notificaciones por email
-- 🖼️ Upload de imágenes con optimización
-- ⚡ Rate limiting (120 req/min)
-
-### 2. 📊 Panel Admin Web (Laravel Blade)
-**Ubicación:** `backend/resources/views/admin/`  
-**URL Producción:** https://ingreso-tienda.kcrsf.com/admin/dashboard
-
-**Características:**
-- Dashboard con estadísticas en tiempo real
-- CRUD completo de productos con filtros
-- Gestión de órdenes con actualización de estado
-- Interfaz moderna con Tailwind CSS + Alpine.js
-- Totalmente responsive
-
-### 3. 📱 Mobile App (React Native + Expo)
-**Ubicación:** `mobile-app/`  
-**Plataformas:** iOS, Android, Web
-
-**Características:**
-- Autenticación con JWT
-- Catálogo de productos con búsqueda
-- Carrito de compras interactivo
-- Historial de órdenes
-- Perfil de usuario
-
-### 4. 🌐 Website Público (Laravel Blade + PWA)
-**Ubicación:** `backend/resources/views/shop/`  
-**URL Producción:** https://ingreso-tienda.kcrsf.com
-
-**Características:**
-- ✅ Home con categorías y productos destacados
-- ✅ Catálogo completo con filtros y búsqueda
-- ✅ Detalle de productos con reviews
-- ✅ Carrito de compras funcional
-- 🎯 **PWA (Progressive Web App)**
-  - Install prompt inteligente (aparece a los 3 segundos)
-  - Cooldown de 24 horas si el usuario rechaza
-  - Modo standalone (se abre como app nativa)
-  - Manifest.json configurado
-  - Diseño responsive
-- Tailwind CSS + Alpine.js
-
-**Documentación PWA:** Ver `PWA-COMPLETADO.md`
-
 ## 🛠️ Stack Tecnológico
 
 ### Frontend
@@ -143,39 +83,6 @@ El sitio web público incluye capacidades de PWA:
 **En iOS (Safari):**
 1. Visita https://ingreso-tienda.kcrsf.com
 2. Toca botón "Compartir" → "Añadir a pantalla de inicio"
-
-### 📖 Documentación Completa
-Ver archivo `PWA-COMPLETADO.md` para:
-- Guía de personalización
-- Crear iconos PNG personalizados
-- Troubleshooting
-- Personalizar comportamiento del popup
-
-## 🚀 Desplegar Cambios
-
-### Al Servidor de Producción
-```bash
-# Commit y push
-git add .
-git commit -m "Descripción del cambio"
-git push origin main
-
-# Desplegar en servidor
-ssh -p 65002 u464516792@br-asc-web1885.main-hosting.eu
-cd ~/domains/ingreso-tienda.kcrsf.com/public_html/backend
-git pull origin main
-```
-
-### Credenciales del Servidor
-- **Host:** br-asc-web1885.main-hosting.eu
-- **SSH:** u464516792@br-asc-web1885.main-hosting.eu
-- **Puerto:** 65002
-- **Path:** ~/domains/ingreso-tienda.kcrsf.com/public_html/backend/
-
-### Panel de Administración
-- **URL:** https://ingreso-tienda.kcrsf.com/admin
-- **Email:** admin@tienda.com
-- **Password:** admin123
 
 ## 🔒 Seguridad
 
