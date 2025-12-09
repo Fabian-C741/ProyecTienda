@@ -39,14 +39,23 @@ class TenantProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'compare_at_price' => 'nullable|numeric|min:0',
-            'stock_quantity' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
             'category_id' => 'nullable|exists:categories,id',
+            'sku' => 'nullable|string|max:100',
             'is_active' => 'boolean',
         ]);
 
+        // Mapear stock a stock_quantity para la base de datos
+        $validated['stock_quantity'] = $validated['stock'];
+        unset($validated['stock']);
+
         $validated['tenant_id'] = $tenant->id;
         $validated['slug'] = Str::slug($validated['name']);
-        $validated['sku'] = 'PRD-' . strtoupper(Str::random(8));
+        
+        // Generar SKU si no se proporciona
+        if (empty($validated['sku'])) {
+            $validated['sku'] = 'PRD-' . strtoupper(Str::random(8));
+        }
 
         Product::create($validated);
 
@@ -80,10 +89,15 @@ class TenantProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'compare_at_price' => 'nullable|numeric|min:0',
-            'stock_quantity' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
             'category_id' => 'nullable|exists:categories,id',
+            'sku' => 'nullable|string|max:100',
             'is_active' => 'boolean',
         ]);
+
+        // Mapear stock a stock_quantity para la base de datos
+        $validated['stock_quantity'] = $validated['stock'];
+        unset($validated['stock']);
 
         if ($product->name !== $validated['name']) {
             $validated['slug'] = Str::slug($validated['name']);
