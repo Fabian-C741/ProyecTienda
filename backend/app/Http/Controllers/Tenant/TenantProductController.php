@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenant;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\SecurityService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -45,16 +46,31 @@ class TenantProductController extends Controller
             'is_active' => 'boolean',
         ]);
 
+        // Sanitizar datos de entrada
+        $validated['name'] = SecurityService::sanitizeString($validated['name']);
+        $validated['description'] = SecurityService::sanitizeString($validated['description'] ?? null);
+
         // Mapear stock a stock_quantity para la base de datos
         $validated['stock_quantity'] = $validated['stock'];
         unset($validated['stock']);
 
+        // Asegurar que el tenant_id sea del usuario autenticado
         $validated['tenant_id'] = $tenant->id;
+        
+        // Generar slug seguro
         $validated['slug'] = Str::slug($validated['name']);
         
         // Generar SKU si no se proporciona
         if (empty($validated['sku'])) {
             $validated['sku'] = 'PRD-' . strtoupper(Str::random(8));
+        }
+
+        // Verificar que la categoría pertenece al tenant (si se proporciona)
+        if (!empty($validated['category_id'])) {
+            $category = Category::find($validated['category_id']);
+            if (!$category || $category->tenant_id !== $tenant->id) {
+                return back()->withErrors(['category_id' => 'Categoría inválida'])->withInput();
+            }
         }
 
         Product::create($validated);
@@ -65,14 +81,22 @@ class TenantProductController extends Controller
 
     public function show(Product $product)
     {
-        $this->authorize('view', $product);
+        // Verificar acceso usando SecurityService
+        if (!SecurityService::canAccessTenantResource(auth()->user(), $product->tenant_id)) {
+            SecurityService::logUnauthorizedAccess(auth()->user(), 'product', 'view');
+            abort(403, 'No tienes permiso para ver este producto.');
+        }
         
         return view('tenant.products.show', compact('product'));
     }
 
     public function edit(Product $product)
     {
-        $this->authorize('update', $product);
+        // Verificar acceso
+        if (!SecurityService::canAccessTenantResource(auth()->user(), $product->tenant_id)) {
+            SecurityService::logUnauthorizedAccess(auth()->user(), 'product', 'edit');
+            abort(403, 'No tienes permiso para editar este producto.');
+        }
         
         $tenant = auth()->user()->tenant;
         $categories = Category::where('tenant_id', $tenant->id)->get();
@@ -82,7 +106,11 @@ class TenantProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        $this->authorize('update', $product);
+        // Verificar acceso
+        if (!SecurityService::canAccessTenantResource(auth()->user(), $product->tenant_id)) {
+            SecurityService::logUnauthorizedAccess(auth()->user(), 'product', 'update');
+            abort(403, 'No tienes permiso para actualizar este producto.');
+        }
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -95,9 +123,21 @@ class TenantProductController extends Controller
             'is_active' => 'boolean',
         ]);
 
+        // Sanitizar datos
+        $validated['name'] = SecurityService::sanitizeString($validated['name']);
+        $validated['description'] = SecurityService::sanitizeString($validated['description'] ?? null);
+
         // Mapear stock a stock_quantity para la base de datos
         $validated['stock_quantity'] = $validated['stock'];
         unset($validated['stock']);
+
+        // Verificar categoría
+        if (!empty($validated['category_id'])) {
+            $category = Category::find($validated['category_id']);
+            if (!$category || $category->tenant_id !== auth()->user()->tenant_id) {
+                return back()->withErrors(['category_id' => 'Categoría inválida'])->withInput();
+            }
+        }
 
         if ($product->name !== $validated['name']) {
             $validated['slug'] = Str::slug($validated['name']);
@@ -111,7 +151,11 @@ class TenantProductController extends Controller
 
     public function destroy(Product $product)
     {
-        $this->authorize('delete', $product);
+        // Verificar acceso
+        if (!SecurityService::canAccessTenantResource(auth()->user(), $product->tenant_id)) {
+            SecurityService::logUnauthorizedAccess(auth()->user(), 'product', 'delete');
+            abort(403, 'No tienes permiso para eliminar este producto.');
+        }
 
         $product->delete();
 

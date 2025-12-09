@@ -69,6 +69,7 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         'tenant' => \App\Http\Middleware\TenantMiddleware::class,
+        'super.admin' => \App\Http\Middleware\SuperAdminMiddleware::class,
         'validate.tenant' => \App\Http\Middleware\ValidateTenant::class,
         'subdomain.tenant' => \App\Http\Middleware\DetectTenantFromSubdomain::class,
         'rate.limit' => \App\Http\Middleware\RateLimitRequests::class,

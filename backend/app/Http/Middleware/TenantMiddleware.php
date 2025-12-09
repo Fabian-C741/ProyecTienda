@@ -4,7 +4,14 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
+/**
+ * TenantMiddleware
+ * 
+ * Middleware para proteger rutas de tenant_admin y establecer
+ * el contexto del tenant actual para scope automático
+ */
 class TenantMiddleware
 {
     /**
@@ -29,6 +36,18 @@ class TenantMiddleware
         if (!$user->tenant_id) {
             abort(403, 'No tienes una tienda asignada. Contacta al administrador.');
         }
+
+        // Verificar que el tenant esté activo
+        $tenant = $user->tenant;
+        if (!$tenant || $tenant->status !== 'active') {
+            abort(403, 'Tu tienda está inactiva. Contacta al administrador.');
+        }
+
+        // Compartir tenant con todas las vistas
+        View::share('currentTenant', $tenant);
+        
+        // Guardar tenant en la request para uso en controladores
+        $request->merge(['current_tenant_id' => $tenant->id]);
         
         return $next($request);
     }

@@ -17,10 +17,11 @@ use App\Http\Controllers\Shop\CartController;
 use App\Http\Controllers\Shop\CheckoutController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Tenant\DashboardController as TenantDashboardController;
-use App\Http\Controllers\Tenant\ProductController as TenantProductController;
-use App\Http\Controllers\Tenant\OrderController as TenantOrderController;
-use App\Http\Controllers\Tenant\SettingsController as TenantSettingsController;
+use App\Http\Controllers\Tenant\TenantProductController;
+use App\Http\Controllers\Tenant\TenantOrderController;
+use App\Http\Controllers\Tenant\TenantSettingsController;
 use App\Http\Controllers\Storefront\StorefrontController;
+use App\Http\Controllers\SuperAdmin\SuperAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +72,7 @@ Route::post('/registro', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::get('/admin/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
 Route::get('/tenant/login', [AuthController::class, 'showAdminLogin'])->name('tenant.login');
+Route::get('/super-admin/login', [AuthController::class, 'showAdminLogin'])->name('super-admin.login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -155,8 +157,32 @@ Route::prefix('tenant')->middleware(['auth', 'tenant'])->name('tenant.')->group(
     
     // Settings
     Route::get('/settings', [TenantSettingsController::class, 'index'])->name('settings.index');
-    Route::post('/settings/store', [TenantSettingsController::class, 'updateStore'])->name('settings.updateStore');
-    Route::post('/settings/appearance', [TenantSettingsController::class, 'updateAppearance'])->name('settings.updateAppearance');
-    Route::post('/settings/mercadopago', [TenantSettingsController::class, 'updateMercadoPago'])->name('settings.updateMercadoPago');
-    Route::post('/settings/mercadopago/test', [TenantSettingsController::class, 'testMercadoPago'])->name('settings.testMercadoPago');
+    Route::post('/settings/general', [TenantSettingsController::class, 'updateGeneral'])->name('settings.general');
+    Route::post('/settings/branding', [TenantSettingsController::class, 'updateBranding'])->name('settings.branding');
+    Route::post('/settings/design', [TenantSettingsController::class, 'updateDesign'])->name('settings.design');
+    Route::post('/settings/social', [TenantSettingsController::class, 'updateSocial'])->name('settings.social');
+    Route::post('/settings/seo', [TenantSettingsController::class, 'updateSeo'])->name('settings.seo');
+    Route::post('/settings/hero', [TenantSettingsController::class, 'updateHero'])->name('settings.hero');
+});
+
+// Super Admin Panel Routes (gestión global del sistema)
+Route::prefix('super-admin')->middleware(['auth', 'super.admin'])->name('super-admin.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Tenants Management
+    Route::get('/tenants', [SuperAdminController::class, 'tenants'])->name('tenants');
+    Route::get('/tenants/create', [SuperAdminController::class, 'createTenant'])->name('tenants.create');
+    Route::post('/tenants', [SuperAdminController::class, 'storeTenant'])->name('tenants.store');
+    Route::get('/tenants/{tenant}', [SuperAdminController::class, 'showTenant'])->name('tenants.show');
+    Route::get('/tenants/{tenant}/edit', [SuperAdminController::class, 'editTenant'])->name('tenants.edit');
+    Route::put('/tenants/{tenant}', [SuperAdminController::class, 'updateTenant'])->name('tenants.update');
+    Route::delete('/tenants/{tenant}', [SuperAdminController::class, 'destroyTenant'])->name('tenants.destroy');
+    Route::post('/tenants/{tenant}/toggle-status', [SuperAdminController::class, 'toggleTenantStatus'])->name('tenants.toggle-status');
+    
+    // Users Management (all users)
+    Route::get('/users', [SuperAdminController::class, 'users'])->name('users');
+    
+    // Commissions & Revenue
+    Route::get('/commissions', [SuperAdminController::class, 'commissions'])->name('commissions');
 });
