@@ -289,12 +289,14 @@ class SuperAdminController extends Controller
      */
     public function commissions()
     {
-        $tenants = Tenant::with(['orders' => function($q) {
-                $q->where('payment_status', 'paid');
-            }])
-            ->get()
+        $tenants = Tenant::all()
             ->map(function($tenant) {
-                $totalSales = $tenant->orders->sum('total_amount');
+                // Obtener pedidos pagados del tenant
+                $paidOrders = Order::where('tenant_id', $tenant->id)
+                    ->where('payment_status', 'paid')
+                    ->get();
+                
+                $totalSales = $paidOrders->sum('total_amount');
                 $commission = $totalSales * ($tenant->commission_rate / 100);
 
                 return [
@@ -303,11 +305,13 @@ class SuperAdminController extends Controller
                     'commission_rate' => $tenant->commission_rate,
                     'commission_amount' => $commission,
                     'tenant_earnings' => $totalSales - $commission,
+                    'orders_count' => $paidOrders->count(),
                 ];
             });
 
         $totalCommissions = $tenants->sum('commission_amount');
+        $totalSales = $tenants->sum('total_sales');
 
-        return view('super-admin.commissions', compact('tenants', 'totalCommissions'));
+        return view('super-admin.commissions', compact('tenants', 'totalCommissions', 'totalSales'));
     }
 }
