@@ -92,13 +92,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/pedido/exito/{order}', [CheckoutController::class, 'success'])->name('order.success');
 });
 
+// ========================================
+// DASHBOARD UNIFICADO
+// Un solo dashboard que detecta el rol del usuario
+// y muestra el panel correspondiente
+// ========================================
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard.index');
+});
+
 // Admin Panel Routes
 Route::prefix('admin')->name('admin.')->group(function () {
     // Dashboard
     Route::get('/', function() {
-        return redirect()->route('admin.dashboard');
+        return redirect()->route('dashboard.index');
     });
-    Route::get('/dashboard', [DashboardWebController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', function() {
+        return redirect()->route('dashboard.index');
+    })->name('dashboard');
     
     // Products CRUD
     Route::get('/products/search', [ProductWebController::class, 'search'])->name('products.search');
@@ -144,8 +155,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 // Tenant Panel Routes (for vendors/tenant admins)
 Route::prefix('tenant')->middleware(['auth', 'tenant'])->name('tenant.')->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [TenantDashboardController::class, 'index'])->name('dashboard');
+    // Dashboard redirige al unificado
+    Route::get('/dashboard', function() {
+        return redirect()->route('dashboard.index');
+    })->name('dashboard');
     
     // Products CRUD
     Route::resource('products', TenantProductController::class);
@@ -167,8 +180,10 @@ Route::prefix('tenant')->middleware(['auth', 'tenant'])->name('tenant.')->group(
 
 // Super Admin Panel Routes (gestión global del sistema)
 Route::prefix('super-admin')->middleware(['auth', 'super.admin'])->name('super-admin.')->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('dashboard');
+    // Dashboard redirige al unificado
+    Route::get('/dashboard', function() {
+        return redirect()->route('dashboard.index');
+    })->name('dashboard');
     
     // Tenants Management
     Route::get('/tenants', [SuperAdminController::class, 'tenants'])->name('tenants');
@@ -186,3 +201,4 @@ Route::prefix('super-admin')->middleware(['auth', 'super.admin'])->name('super-a
     // Commissions & Revenue
     Route::get('/commissions', [SuperAdminController::class, 'commissions'])->name('commissions');
 });
+

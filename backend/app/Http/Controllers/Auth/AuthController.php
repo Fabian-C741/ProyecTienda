@@ -74,14 +74,8 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
-            // Redireccionar según rol
-            if ($user->role === 'super_admin') {
-                return redirect()->intended('/admin/dashboard');
-            } elseif ($user->role === 'tenant_admin') {
-                return redirect()->intended('/tenant/dashboard');
-            } else {
-                return redirect()->intended('/');
-            }
+            // Redireccionar según rol a dashboard unificado
+            return redirect()->route('dashboard.index');
         }
 
         throw ValidationException::withMessages([
