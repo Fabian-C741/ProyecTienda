@@ -6,6 +6,11 @@ if (!function_exists('storefront_route')) {
      */
     function storefront_route($name, $parameters = [])
     {
+        // Asegurar que $parameters sea un array
+        if (!is_array($parameters)) {
+            $parameters = [$parameters];
+        }
+        
         // Intentar obtener tenant desde diferentes fuentes
         $tenant = null;
         
