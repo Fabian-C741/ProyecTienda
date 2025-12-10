@@ -42,8 +42,8 @@ if (!function_exists('storefront_route')) {
             // Usar rutas de subdomain
             return route('storefront.' . $name, $parameters);
         } else {
-            // Usar rutas alternativas con slug
-            return route('storefront.alt.' . $name, array_merge(['slug' => $tenant->slug], $parameters));
+            // Usar rutas PATH con slug (/tienda/{slug})
+            return route('tienda.' . $name, array_merge(['slug' => $tenant->slug], $parameters));
         }
     }
 }
