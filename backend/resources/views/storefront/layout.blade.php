@@ -63,46 +63,6 @@
 <body class="bg-gray-50">
     <!-- Header -->
     <header class="bg-white shadow-md sticky top-0 z-50">
-        <!-- Top Bar -->
-        <div class="bg-primary text-white py-2">
-            <div class="container mx-auto px-4 flex justify-between items-center text-sm">
-                <div class="flex gap-4">
-                    @if($tenant->email)
-                    <a href="mailto:{{ $tenant->email }}" class="hover:underline">
-                        <i class="fas fa-envelope mr-1"></i> {{ $tenant->email }}
-                    </a>
-                    @endif
-                    @if($tenant->phone)
-                    <a href="tel:{{ $tenant->phone }}" class="hover:underline">
-                        <i class="fas fa-phone mr-1"></i> {{ $tenant->phone }}
-                    </a>
-                    @endif
-                </div>
-                <div class="flex gap-3">
-                    @if($tenant->facebook_url)
-                    <a href="{{ $tenant->facebook_url }}" target="_blank" class="hover:opacity-80">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                    @endif
-                    @if($tenant->instagram_url)
-                    <a href="{{ $tenant->instagram_url }}" target="_blank" class="hover:opacity-80">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    @endif
-                    @if($tenant->twitter_url)
-                    <a href="{{ $tenant->twitter_url }}" target="_blank" class="hover:opacity-80">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    @endif
-                    @if($tenant->whatsapp_number)
-                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $tenant->whatsapp_number) }}" target="_blank" class="hover:opacity-80">
-                        <i class="fab fa-whatsapp"></i>
-                    </a>
-                    @endif
-                </div>
-            </div>
-        </div>
-        
         <!-- Main Header -->
         <div class="container mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
