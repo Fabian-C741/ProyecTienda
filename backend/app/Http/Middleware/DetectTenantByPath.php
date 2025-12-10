@@ -37,6 +37,7 @@ class DetectTenantByPath
                 // Guardar tenant en sesión y request
                 session(['tenant_id' => $tenant->id]);
                 session(['tenant' => $tenant]);
+                session(['tenant_slug' => $slug]); // Guardar slug para redirecciones
                 $request->merge(['tenant_id' => $tenant->id]);
                 $request->attributes->set('tenant', $tenant);
                 

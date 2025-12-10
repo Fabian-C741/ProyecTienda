@@ -51,6 +51,14 @@ class AuthController extends Controller
         // Login automático
         Auth::login($user);
 
+        // Detectar si viene desde una tienda específica
+        $tenantSlug = session('tenant_slug');
+        
+        if ($tenantSlug) {
+            return redirect()->route('tienda.home', ['slug' => $tenantSlug])
+                ->with('success', '¡Registro exitoso! Bienvenido a nuestra tienda.');
+        }
+
         return redirect()->route('home')->with('success', '¡Registro exitoso! Bienvenido a nuestra tienda.');
     }
 
@@ -81,8 +89,22 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
-            // Redireccionar según rol a dashboard unificado
-            return redirect()->route('dashboard.index');
+            // Detectar si viene desde una tienda específica
+            $tenantSlug = session('tenant_slug'); // Guardado por el middleware path.tenant
+            
+            // Si viene desde una tienda, redirigir de vuelta a la tienda
+            if ($tenantSlug) {
+                return redirect()->route('tienda.home', ['slug' => $tenantSlug])
+                    ->with('success', '¡Bienvenido de vuelta!');
+            }
+
+            // Si es admin/tenant/super_admin, ir al dashboard
+            if (in_array($user->role, ['admin', 'tenant', 'super_admin'])) {
+                return redirect()->route('dashboard.index');
+            }
+
+            // Clientes regulares van al home
+            return redirect()->route('home');
         }
 
         throw ValidationException::withMessages([
@@ -93,10 +115,19 @@ class AuthController extends Controller
     // Logout
     public function logout(Request $request)
     {
+        // Guardar el slug del tenant antes de invalidar sesión
+        $tenantSlug = session('tenant_slug');
+        
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        // Si venía de una tienda, redirigir de vuelta a ella
+        if ($tenantSlug) {
+            return redirect()->route('tienda.home', ['slug' => $tenantSlug])
+                ->with('success', 'Sesión cerrada correctamente.');
+        }
 
         return redirect('/')->with('success', 'Sesión cerrada correctamente.');
     }
