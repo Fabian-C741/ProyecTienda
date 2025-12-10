@@ -82,8 +82,9 @@ Route::prefix('tienda')->middleware('path.tenant')->name('tienda.')->group(funct
     Route::post('/{slug}/carrito/cupon', [CartController::class, 'applyCoupon'])->name('cart.coupon.apply');
     Route::delete('/{slug}/carrito/cupon', [CartController::class, 'removeCoupon'])->name('cart.coupon.remove');
     
-    // Checkout dentro del contexto de la tienda (requiere auth)
+    // Checkout y pedidos dentro del contexto de la tienda (requiere auth)
     Route::middleware('auth')->group(function () {
+        Route::get('/{slug}/mis-pedidos', [StorefrontController::class, 'orders'])->name('orders');
         Route::get('/{slug}/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
         Route::post('/{slug}/checkout/procesar', [CheckoutController::class, 'process'])->name('checkout.process');
         Route::get('/{slug}/pedido/exito/{order}', [CheckoutController::class, 'success'])->name('order.success');

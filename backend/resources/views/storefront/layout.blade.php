@@ -97,7 +97,7 @@
                 
                 <!-- Actions -->
                 <div class="flex items-center gap-4">
-                    <a href="{{ route('cart.index') }}" class="relative">
+                    <a href="{{ storefront_route('cart.index') }}" class="relative">
                         <i class="fas fa-shopping-cart text-2xl text-gray-700 hover:text-primary"></i>
                         <span class="absolute -top-2 -right-2 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                             0
@@ -105,12 +105,36 @@
                     </a>
                     
                     @auth
-                    <a href="{{ route('admin.dashboard') }}" class="btn-primary text-white px-4 py-2 rounded-lg">
-                        Mi Cuenta
-                    </a>
+                        @if(auth()->user()->role === 'customer')
+                        <div class="relative group">
+                            <button class="btn-primary text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                                <i class="fas fa-user"></i>
+                                {{ auth()->user()->name }}
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div class="hidden group-hover:block absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
+                                <a href="{{ storefront_route('orders') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-shopping-bag mr-2"></i>Mis Pedidos
+                                </a>
+                                <form action="{{ route('logout') }}" method="POST" class="block">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        @else
+                        <a href="{{ route('dashboard.index') }}" class="btn-primary text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                        </a>
+                        @endif
                     @else
-                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-primary font-medium">
-                        Ingresar
+                    <a href="{{ storefront_route('login') }}" class="text-gray-700 hover:text-primary font-medium">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Ingresar
+                    </a>
+                    <a href="{{ storefront_route('register') }}" class="btn-primary text-white px-4 py-2 rounded-lg">
+                        Registrarse
                     </a>
                     @endauth
                 </div>
