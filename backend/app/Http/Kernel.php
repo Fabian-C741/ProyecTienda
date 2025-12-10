@@ -72,6 +72,7 @@ class Kernel extends HttpKernel
         'super.admin' => \App\Http\Middleware\SuperAdminMiddleware::class,
         'validate.tenant' => \App\Http\Middleware\ValidateTenant::class,
         'subdomain.tenant' => \App\Http\Middleware\DetectTenantBySubdomain::class,
+        'path.tenant' => \App\Http\Middleware\DetectTenantByPath::class, // Tenant por URL path
         'rate.limit' => \App\Http\Middleware\RateLimitRequests::class,
         'audit' => \App\Http\Middleware\AuditLog::class,
     ];

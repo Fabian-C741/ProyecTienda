@@ -56,15 +56,23 @@
         <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
             <div class="flex items-center">
                 <i class="fas fa-link text-blue-500 mr-3"></i>
-                <div>
+<div>
                     <p class="text-sm font-medium text-blue-800">URL de la tienda</p>
-                    <p class="text-blue-900 font-mono text-lg">
-                        {{ $tenant->slug }}.ingreso-tienda.kcrsf.com
+                    <p class="text-blue-900 font-mono text-sm md:text-base break-all">
+                        https://ingreso-tienda.kcrsf.com/tienda/{{ $tenant->slug }}
                     </p>
                     <p class="text-xs text-blue-700 mt-1">
                         <i class="fas fa-info-circle mr-1"></i>
                         El slug no se puede modificar después de crear la tienda
                     </p>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                            🔒 HTTPS Seguro
+                        </span>
+                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                            ✅ SSL Activo
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>

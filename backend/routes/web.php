@@ -44,6 +44,7 @@ Route::domain(config('app.main_domain', 'ingreso-tienda.kcrsf.com'))->group(func
 });
 
 // Storefront Routes (Subdominios de cada vendedor: {tenant}.ingreso-tienda.kcrsf.com)
+// NOTA: Mantenido para compatibilidad futura con VPS (requiere SSL wildcard)
 Route::domain('{subdomain}.' . config('app.main_domain', 'ingreso-tienda.kcrsf.com'))
     ->middleware('subdomain.tenant')
     ->name('storefront.')
@@ -56,14 +57,37 @@ Route::domain('{subdomain}.' . config('app.main_domain', 'ingreso-tienda.kcrsf.c
         Route::get('/pagina/{slug}', [StorefrontController::class, 'page'])->name('page');
     });
 
-// Storefront Routes alternativas (para desarrollo local sin subdominios)
-Route::prefix('tienda')->name('storefront.alt.')->group(function () {
+// Storefront Routes por PATH (Producción con SSL estándar: /tienda/{slug})
+// Compatible con hosting compartido sin SSL wildcard
+Route::prefix('tienda')->middleware('path.tenant')->name('tienda.')->group(function () {
     Route::get('/{slug}', [StorefrontController::class, 'home'])->name('home');
     Route::get('/{slug}/productos', [StorefrontController::class, 'products'])->name('products');
+    Route::get('/{slug}/producto/{productSlug}', [StorefrontController::class, 'product'])->name('product');
     Route::get('/{slug}/nosotros', [StorefrontController::class, 'about'])->name('about');
     Route::get('/{slug}/contacto', [StorefrontController::class, 'contact'])->name('contact');
-    Route::get('/{slug}/producto/{productSlug}', [StorefrontController::class, 'product'])->name('product');
     Route::get('/{slug}/pagina/{pageSlug}', [StorefrontController::class, 'page'])->name('page');
+    
+    // Autenticación dentro del contexto de la tienda
+    Route::get('/{slug}/registro', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/{slug}/registro', [AuthController::class, 'register']);
+    Route::get('/{slug}/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/{slug}/login', [AuthController::class, 'login']);
+    
+    // Carrito dentro del contexto de la tienda
+    Route::get('/{slug}/carrito', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/{slug}/carrito/agregar/{product}', [CartController::class, 'add'])->name('cart.add');
+    Route::put('/{slug}/carrito/actualizar/{product}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/{slug}/carrito/eliminar/{product}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('/{slug}/carrito/vaciar', [CartController::class, 'clear'])->name('cart.clear');
+    Route::post('/{slug}/carrito/cupon', [CartController::class, 'applyCoupon'])->name('cart.coupon.apply');
+    Route::delete('/{slug}/carrito/cupon', [CartController::class, 'removeCoupon'])->name('cart.coupon.remove');
+    
+    // Checkout dentro del contexto de la tienda (requiere auth)
+    Route::middleware('auth')->group(function () {
+        Route::get('/{slug}/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+        Route::post('/{slug}/checkout/procesar', [CheckoutController::class, 'process'])->name('checkout.process');
+        Route::get('/{slug}/pedido/exito/{order}', [CheckoutController::class, 'success'])->name('order.success');
+    });
 });
 
 // Authentication Routes

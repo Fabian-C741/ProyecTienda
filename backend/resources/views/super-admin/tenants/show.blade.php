@@ -69,23 +69,34 @@
 
         <!-- URL del Subdominio (DESTACADO) -->
         <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg shadow-lg p-6 mb-6 text-white">
-            <div class="flex items-center justify-between">
-                <div>
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium opacity-90 mb-1">URL de la Tienda</p>
-                    <div class="flex items-center space-x-3">
-                        <a href="https://{{ $tenant->slug }}.ingreso-tienda.kcrsf.com" 
+                    <div class="flex items-center space-x-3 flex-wrap">
+                        <a href="https://ingreso-tienda.kcrsf.com/tienda/{{ $tenant->slug }}" 
                             target="_blank"
-                            class="text-2xl font-bold hover:underline flex items-center">
-                            {{ $tenant->slug }}.ingreso-tienda.kcrsf.com
-                            <i class="fas fa-external-link-alt ml-3 text-lg"></i>
+                            class="text-xl md:text-2xl font-bold hover:underline flex items-center break-all">
+                            ingreso-tienda.kcrsf.com/tienda/{{ $tenant->slug }}
+                            <i class="fas fa-external-link-alt ml-3 text-lg flex-shrink-0"></i>
                         </a>
                     </div>
                     <p class="text-sm opacity-75 mt-2">
                         <i class="fas fa-info-circle mr-1"></i>
-                        Los clientes acceden a través de este subdominio
+                        Los clientes acceden a través de esta URL
                     </p>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        <span class="text-xs bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                            ✅ Compatible con SSL estándar
+                        </span>
+                        <span class="text-xs bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                            🔒 HTTPS Seguro
+                        </span>
+                        <span class="text-xs bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                            🚀 Sin configuración adicional
+                        </span>
+                    </div>
                 </div>
-                <button onclick="copyURL()" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition">
+                <button onclick="copyURL()" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition flex-shrink-0 whitespace-nowrap">
                     <i class="fas fa-copy mr-2"></i>Copiar URL
                 </button>
             </div>
@@ -291,7 +302,7 @@
 
     <script>
         function copyURL() {
-            const url = "{{ $tenant->slug }}.ingreso-tienda.kcrsf.com";
+            const url = "https://ingreso-tienda.kcrsf.com/tienda/{{ $tenant->slug }}";
             navigator.clipboard.writeText(url).then(() => {
                 // Mostrar mensaje de éxito
                 alert('URL copiada: ' + url);
