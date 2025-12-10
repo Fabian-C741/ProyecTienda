@@ -114,6 +114,14 @@ class SuperAdminController extends Controller
             'admin_name' => 'required|string|max:255',
             'admin_email' => 'required|email|unique:users,email',
             'admin_password' => 'required|string|min:8',
+        ], [
+            // Mensajes personalizados para el slug
+            'slug.required' => 'El identificador de la tienda es obligatorio',
+            'slug.unique' => 'Este identificador ya está en uso. Por favor elige otro nombre único para tu tienda',
+            'slug.alpha_dash' => 'El identificador solo puede contener letras, números y guiones',
+            'slug.max' => 'El identificador no puede tener más de 255 caracteres',
+            // Mensajes para otros campos
+            'admin_email.unique' => 'Este correo ya está registrado en el sistema',
         ]);
 
         if ($validator->fails()) {

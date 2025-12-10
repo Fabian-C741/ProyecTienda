@@ -65,12 +65,19 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Slug (URL) <span class="text-red-500">*</span>
+                                Identificador de la Tienda (URL) <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" name="slug" value="{{ old('slug') }}" required
+                            <input type="text" name="slug" id="slug" value="{{ old('slug') }}" required
                                 class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-                                placeholder="tienda-ropa">
-                            <p class="text-xs text-gray-500 mt-1">Solo letras minúsculas, números y guiones</p>
+                                placeholder="mi-tienda-ejemplo">
+                            <p class="text-xs text-gray-600 mt-1">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Solo letras minúsculas, números y guiones. Debe ser único.
+                            </p>
+                            <p class="text-xs text-blue-600 mt-1 font-medium">
+                                <i class="fas fa-link mr-1"></i>
+                                URL: <span id="url-preview" class="font-mono">https://ingreso-tienda.kcrsf.com/tienda/mi-tienda-ejemplo</span>
+                            </p>
                         </div>
 
                         <div>
@@ -163,5 +170,42 @@
             </form>
         </div>
     </main>
+
+    <script>
+        // Auto-generar slug desde el nombre
+        const nameInput = document.querySelector('input[name="name"]');
+        const slugInput = document.getElementById('slug');
+        const urlPreview = document.getElementById('url-preview');
+
+        nameInput.addEventListener('input', function() {
+            if (!slugInput.value || slugInput.dataset.manual !== 'true') {
+                const slug = this.value
+                    .toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Quitar tildes
+                    .replace(/[^a-z0-9\s-]/g, '') // Solo letras, números, espacios y guiones
+                    .replace(/\s+/g, '-') // Espacios a guiones
+                    .replace(/-+/g, '-') // Múltiples guiones a uno solo
+                    .replace(/^-|-$/g, ''); // Quitar guiones al inicio/final
+                
+                slugInput.value = slug;
+                updateUrlPreview(slug);
+            }
+        });
+
+        slugInput.addEventListener('input', function() {
+            this.dataset.manual = 'true';
+            updateUrlPreview(this.value);
+        });
+
+        function updateUrlPreview(slug) {
+            const baseUrl = 'https://ingreso-tienda.kcrsf.com/tienda/';
+            urlPreview.textContent = baseUrl + (slug || 'tu-tienda');
+        }
+
+        // Actualizar preview inicial
+        if (slugInput.value) {
+            updateUrlPreview(slugInput.value);
+        }
+    </script>
 </body>
 </html>
