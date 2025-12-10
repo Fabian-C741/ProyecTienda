@@ -6,11 +6,17 @@ vendor/
 .env
 .env.local
 .env.production
+.env.remote
+backend/.env
+backend/.env.local
+backend/.env.remote
+backend/.env.production
 
 # Documentation (Private)
 .docs/
 *.md
 !README.md
+!CONEXION_BD_REMOTA.md
 
 # Deployment scripts (contain sensitive info)
 deploy.bat
