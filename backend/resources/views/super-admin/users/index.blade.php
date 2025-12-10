@@ -147,6 +147,8 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tienda</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registro</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -190,10 +192,54 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ $user->created_at->format('d/m/Y') }}
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($user->status == 'active')
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Activo
+                                    </span>
+                                @else
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                        Inactivo
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <div class="flex items-center justify-center space-x-2">
+                                    <!-- Ver detalles -->
+                                    <button onclick="viewUser({{ $user->id }})" 
+                                            class="text-blue-600 hover:text-blue-900 transition-colors" 
+                                            title="Ver detalles">
+                                        <i class="far fa-eye text-lg"></i>
+                                    </button>
+                                    
+                                    <!-- Editar -->
+                                    <a href="{{ route('super-admin.users.edit', $user->id) }}" 
+                                       class="text-indigo-600 hover:text-indigo-900 transition-colors" 
+                                       title="Editar usuario">
+                                        <i class="far fa-edit text-lg"></i>
+                                    </a>
+                                    
+                                    <!-- Restablecer contraseña -->
+                                    <button onclick="resetPassword({{ $user->id }})" 
+                                            class="text-yellow-600 hover:text-yellow-900 transition-colors" 
+                                            title="Restablecer contraseña">
+                                        <i class="fas fa-key text-lg"></i>
+                                    </button>
+                                    
+                                    <!-- Eliminar -->
+                                    @if($user->role != 'super_admin')
+                                    <button onclick="deleteUser({{ $user->id }})" 
+                                            class="text-red-600 hover:text-red-900 transition-colors" 
+                                            title="Eliminar usuario">
+                                        <i class="far fa-trash-alt text-lg"></i>
+                                    </button>
+                                    @endif
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center">
+                            <td colspan="7" class="px-6 py-12 text-center">
                                 <i class="fas fa-users text-gray-300 text-5xl mb-4"></i>
                                 <p class="text-gray-500">No se encontraron usuarios</p>
                             </td>
@@ -210,5 +256,181 @@
             @endif
         </div>
     </div>
+
+    <!-- Modal Ver Usuario -->
+    <div id="viewUserModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Detalles del Usuario</h3>
+                <button onclick="closeViewModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="userDetails" class="space-y-3">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Restablecer Contraseña -->
+    <div id="resetPasswordModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Restablecer Contraseña</h3>
+                <button onclick="closeResetModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="resetPasswordForm">
+                <input type="hidden" id="resetUserId" name="user_id">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nueva Contraseña</label>
+                    <input type="password" id="newPassword" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                           placeholder="Ingresa nueva contraseña" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirmar Contraseña</label>
+                    <input type="password" id="confirmPassword" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                           placeholder="Confirma la contraseña" required>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeResetModal()" 
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                        Cancelar
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                        <i class="fas fa-key mr-2"></i>Restablecer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Ver detalles del usuario
+        function viewUser(userId) {
+            fetch(`/super-admin/users/${userId}/details`)
+                .then(response => response.json())
+                .then(user => {
+                    document.getElementById('userDetails').innerHTML = `
+                        <div class="border-b pb-3">
+                            <p class="text-sm text-gray-500">Nombre</p>
+                            <p class="font-semibold">${user.name}</p>
+                        </div>
+                        <div class="border-b pb-3">
+                            <p class="text-sm text-gray-500">Email</p>
+                            <p class="font-semibold">${user.email}</p>
+                        </div>
+                        <div class="border-b pb-3">
+                            <p class="text-sm text-gray-500">Rol</p>
+                            <p class="font-semibold">${user.role_display}</p>
+                        </div>
+                        <div class="border-b pb-3">
+                            <p class="text-sm text-gray-500">Tienda</p>
+                            <p class="font-semibold">${user.tenant_name || '-'}</p>
+                        </div>
+                        <div class="border-b pb-3">
+                            <p class="text-sm text-gray-500">Estado</p>
+                            <p class="font-semibold ${user.status == 'active' ? 'text-green-600' : 'text-red-600'}">
+                                ${user.status == 'active' ? 'Activo' : 'Inactivo'}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Fecha de registro</p>
+                            <p class="font-semibold">${user.created_at}</p>
+                        </div>
+                    `;
+                    document.getElementById('viewUserModal').classList.remove('hidden');
+                })
+                .catch(error => {
+                    alert('Error al cargar los detalles del usuario');
+                    console.error(error);
+                });
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewUserModal').classList.add('hidden');
+        }
+
+        // Restablecer contraseña
+        function resetPassword(userId) {
+            document.getElementById('resetUserId').value = userId;
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('resetPasswordModal').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('resetPasswordModal').classList.add('hidden');
+        }
+
+        document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('resetUserId').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                alert('La contraseña debe tener al menos 8 caracteres');
+                return;
+            }
+
+            fetch(`/super-admin/users/${userId}/reset-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ password: newPassword })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Contraseña restablecida exitosamente');
+                    closeResetModal();
+                } else {
+                    alert('Error: ' + (data.message || 'No se pudo restablecer la contraseña'));
+                }
+            })
+            .catch(error => {
+                alert('Error al restablecer la contraseña');
+                console.error(error);
+            });
+        });
+
+        // Eliminar usuario
+        function deleteUser(userId) {
+            if (confirm('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.')) {
+                fetch(`/super-admin/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Usuario eliminado exitosamente');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + (data.message || 'No se pudo eliminar el usuario'));
+                    }
+                })
+                .catch(error => {
+                    alert('Error al eliminar el usuario');
+                    console.error(error);
+                });
+            }
+        }
+    </script>
 </body>
 </html>

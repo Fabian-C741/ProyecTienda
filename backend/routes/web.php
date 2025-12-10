@@ -197,6 +197,11 @@ Route::prefix('super-admin')->middleware(['auth', 'super.admin'])->name('super-a
     
     // Users Management (all users)
     Route::get('/users', [SuperAdminController::class, 'users'])->name('users');
+    Route::get('/users/{id}/details', [SuperAdminController::class, 'getUserDetails'])->name('users.details');
+    Route::get('/users/{id}/edit', [SuperAdminController::class, 'editUser'])->name('users.edit');
+    Route::put('/users/{id}', [SuperAdminController::class, 'updateUser'])->name('users.update');
+    Route::post('/users/{id}/reset-password', [SuperAdminController::class, 'resetUserPassword'])->name('users.reset-password');
+    Route::delete('/users/{id}', [SuperAdminController::class, 'deleteUser'])->name('users.delete');
     
     // Commissions & Revenue
     Route::get('/commissions', [SuperAdminController::class, 'commissions'])->name('commissions');

@@ -314,4 +314,141 @@ class SuperAdminController extends Controller
 
         return view('super-admin.commissions', compact('tenants', 'totalCommissions', 'totalSales'));
     }
+
+    /**
+     * Obtener detalles de un usuario (AJAX)
+     */
+    public function getUserDetails($id)
+    {
+        $user = User::with('tenant')->findOrFail($id);
+        
+        $roleDisplay = match($user->role) {
+            'super_admin' => 'Super Administrador',
+            'tenant_admin' => 'Administrador de Tienda',
+            'customer' => 'Cliente',
+            default => $user->role
+        };
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'role_display' => $roleDisplay,
+            'tenant_name' => $user->tenant ? $user->tenant->name : null,
+            'status' => $user->status ?? 'active',
+            'created_at' => $user->created_at->format('d/m/Y H:i'),
+        ]);
+    }
+
+    /**
+     * Mostrar formulario de edición de usuario
+     */
+    public function editUser($id)
+    {
+        $user = User::findOrFail($id);
+        $tenants = Tenant::where('status', 'active')->get();
+        
+        return view('super-admin.users.edit', compact('user', 'tenants'));
+    }
+
+    /**
+     * Actualizar usuario
+     */
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $rules = [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'role' => 'required|in:super_admin,tenant_admin,customer',
+            'status' => 'required|in:active,inactive',
+        ];
+
+        // Si cambia la contraseña
+        if ($request->filled('password')) {
+            $rules['password'] = 'required|min:8|confirmed';
+        }
+
+        // Si es tenant_admin, requiere tenant_id
+        if ($request->role === 'tenant_admin') {
+            $rules['tenant_id'] = 'required|exists:tenants,id';
+        }
+
+        $validated = $request->validate($rules);
+
+        // Actualizar datos básicos
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->role = $validated['role'];
+        $user->status = $validated['status'];
+
+        // Actualizar tenant_id según el rol
+        if ($validated['role'] === 'tenant_admin') {
+            $user->tenant_id = $validated['tenant_id'];
+        } else {
+            $user->tenant_id = null;
+        }
+
+        // Actualizar contraseña si se proporcionó
+        if ($request->filled('password')) {
+            $user->password = bcrypt($validated['password']);
+        }
+
+        $user->save();
+
+        return redirect()->route('super-admin.users')
+            ->with('success', 'Usuario actualizado exitosamente');
+    }
+
+    /**
+     * Restablecer contraseña de un usuario (AJAX)
+     */
+    public function resetUserPassword(Request $request, $id)
+    {
+        $request->validate([
+            'password' => 'required|min:8',
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->password = bcrypt($request->password);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Contraseña restablecida exitosamente'
+        ]);
+    }
+
+    /**
+     * Eliminar usuario
+     */
+    public function deleteUser($id)
+    {
+        $user = User::findOrFail($id);
+
+        // No permitir eliminar super admins
+        if ($user->role === 'super_admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se puede eliminar un Super Administrador'
+            ], 403);
+        }
+
+        // No permitir eliminar el usuario actual
+        if ($user->id === auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No puedes eliminar tu propio usuario'
+            ], 403);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario eliminado exitosamente'
+        ]);
+    }
 }
