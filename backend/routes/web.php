@@ -59,7 +59,8 @@ Route::domain('{subdomain}.' . config('app.main_domain', 'ingreso-tienda.kcrsf.c
 
 // Storefront Routes por PATH (Producción con SSL estándar: /tienda/{slug})
 // Compatible con hosting compartido sin SSL wildcard
-Route::prefix('tienda')->middleware('path.tenant')->name('tienda.')->group(function () {
+// Rate limited: 100 requests por minuto para prevenir ataques DDoS
+Route::prefix('tienda')->middleware(['path.tenant', 'throttle:100,1'])->name('tienda.')->group(function () {
     Route::get('/{slug}', [StorefrontController::class, 'home'])->name('home');
     Route::get('/{slug}/productos', [StorefrontController::class, 'products'])->name('products');
     Route::get('/{slug}/producto/{productSlug}', [StorefrontController::class, 'product'])->name('product');
@@ -143,8 +144,9 @@ Route::middleware('auth')->group(function () {
 // VENDOR PANEL (tenant_admin)
 // Panel de administración para vendedores
 // Prefijo: /vendedor
+// Rate limited: 60 requests por minuto
 // ========================================
-Route::prefix('vendedor')->middleware(['auth', 'tenant'])->name('vendedor.')->group(function () {
+Route::prefix('vendedor')->middleware(['auth', 'tenant', 'throttle:60,1'])->name('vendedor.')->group(function () {
     // Products CRUD
     Route::get('/productos', [TenantProductController::class, 'index'])->name('productos.index');
     Route::get('/productos/crear', [TenantProductController::class, 'create'])->name('productos.create');

@@ -87,6 +87,20 @@ class CheckoutController extends Controller
 
             // Crear items de la orden y actualizar stock
             foreach ($cart as $productId => $item) {
+                // CRÍTICO: lockForUpdate() previene race conditions
+                // Si 2 personas compran el último producto al mismo tiempo,
+                // solo una podrá completar la compra
+                $product = Product::lockForUpdate()->find($productId);
+                
+                if (!$product) {
+                    throw new \Exception("Producto {$productId} no encontrado");
+                }
+                
+                // Verificar stock disponible
+                if ($product->track_inventory && $product->stock < $item['quantity']) {
+                    throw new \Exception("Stock insuficiente para {$product->name}. Disponible: {$product->stock}");
+                }
+                
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $productId,
@@ -97,8 +111,7 @@ class CheckoutController extends Controller
                 ]);
 
                 // Actualizar stock
-                $product = Product::find($productId);
-                if ($product && $product->track_inventory) {
+                if ($product->track_inventory) {
                     $product->decrement('stock', $item['quantity']);
                 }
             }
