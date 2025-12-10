@@ -99,7 +99,7 @@ class AuthController extends Controller
 
             // 2. VENDOR/TENANT_ADMIN → Su panel de administración
             if ($user->role === 'tenant_admin') {
-                return redirect()->route('dashboard')
+                return redirect()->route('dashboard.index')
                     ->with('success', 'Bienvenido a tu panel de administración');
             }
 

@@ -17,7 +17,7 @@
                     <h1 class="text-xl font-bold">{{ $tenant->name }}</h1>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="{{ route('dashboard') }}" class="px-3 py-2 rounded hover:bg-blue-700">
+                    <a href="{{ route('dashboard.index') }}" class="px-3 py-2 rounded hover:bg-blue-700">
                         <i class="fas fa-chart-line mr-2"></i>Dashboard
                     </a>
                     <a href="{{ route('tenant.products.index') }}" class="px-3 py-2 rounded hover:bg-blue-700">
