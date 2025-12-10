@@ -89,22 +89,38 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
-            // Detectar si viene desde una tienda específica
-            $tenantSlug = session('tenant_slug'); // Guardado por el middleware path.tenant
+            // IMPORTANTE: Redirección según ROL, no contexto
             
-            // Si viene desde una tienda, redirigir de vuelta a la tienda
-            if ($tenantSlug) {
-                return redirect()->route('tienda.home', ['slug' => $tenantSlug])
-                    ->with('success', '¡Bienvenido de vuelta!');
+            // 1. SUPER ADMIN → Panel de super admin
+            if ($user->role === 'super_admin') {
+                return redirect()->route('super-admin.dashboard')
+                    ->with('success', 'Bienvenido Super Admin');
             }
 
-            // Si es admin/tenant/super_admin, ir al dashboard
-            if (in_array($user->role, ['admin', 'tenant', 'super_admin'])) {
-                return redirect()->route('dashboard.index');
+            // 2. VENDOR/TENANT_ADMIN → Su panel de administración
+            if ($user->role === 'tenant_admin') {
+                return redirect()->route('dashboard')
+                    ->with('success', 'Bienvenido a tu panel de administración');
             }
 
-            // Clientes regulares van al home
-            return redirect()->route('home');
+            // 3. CUSTOMER → Si viene de una tienda, volver a esa tienda
+            if ($user->role === 'customer') {
+                $tenantSlug = session('tenant_slug'); // Guardado por middleware path.tenant
+                
+                if ($tenantSlug) {
+                    return redirect()->route('tienda.home', ['slug' => $tenantSlug])
+                        ->with('success', '¡Bienvenido de vuelta!');
+                }
+                
+                // Si no viene de tienda, ir al home general (esto casi nunca pasa)
+                return redirect()->route('home');
+            }
+
+            // 4. Rol desconocido
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => __('Tu cuenta no tiene permisos válidos. Contacta al administrador.'),
+            ]);
         }
 
         throw ValidationException::withMessages([
