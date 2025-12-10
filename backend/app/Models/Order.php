@@ -7,10 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Scopes\TenantScope;
 
 class Order extends Model
 {
     use HasFactory, SoftDeletes;
+
+    /**
+     * The "booted" method of the model.
+     * Aplica TenantScope automáticamente para PROTEGER pedidos entre tenants
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new TenantScope());
+    }
 
     protected $fillable = [
         'tenant_id',

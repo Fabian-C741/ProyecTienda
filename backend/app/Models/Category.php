@@ -6,10 +6,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Scopes\TenantScope;
 
 class Category extends Model
 {
     use HasFactory;
+
+    /**
+     * The "booted" method of the model.
+     * Aplica TenantScope automáticamente para PROTEGER categorías entre tenants
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new TenantScope());
+        
+        // Auto-asignar tenant_id al crear una categoría si el usuario es tenant_admin
+        static::creating(function (Category $category) {
+            if (auth()->check() && auth()->user()->role === 'tenant_admin' && auth()->user()->tenant_id) {
+                $category->tenant_id = auth()->user()->tenant_id;
+            }
+        });
+    }
 
     protected $fillable = [
         'tenant_id',

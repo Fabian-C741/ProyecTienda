@@ -7,10 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Scopes\TenantScope;
 
 class Product extends Model
 {
     use HasFactory, SoftDeletes;
+
+    /**
+     * The "booted" method of the model.
+     * Aplica TenantScope automáticamente para PROTEGER datos entre tenants
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new TenantScope());
+        
+        // Auto-asignar tenant_id al crear un producto si el usuario es tenant_admin
+        static::creating(function (Product $product) {
+            if (auth()->check() && auth()->user()->role === 'tenant_admin' && auth()->user()->tenant_id) {
+                $product->tenant_id = auth()->user()->tenant_id;
+            }
+        });
+    }
 
     protected $fillable = [
         'tenant_id',
