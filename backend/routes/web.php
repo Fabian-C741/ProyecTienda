@@ -139,116 +139,70 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard.index');
 });
 
-// Admin Panel Routes
-Route::prefix('admin')->name('admin.')->group(function () {
-    // Dashboard
-    Route::get('/', function() {
-        return redirect()->route('dashboard.index');
-    });
-    Route::get('/dashboard', function() {
-        return redirect()->route('dashboard.index');
-    })->name('dashboard');
-    
+// ========================================
+// VENDOR PANEL (tenant_admin)
+// Panel de administración para vendedores
+// Prefijo: /vendedor
+// ========================================
+Route::prefix('vendedor')->middleware(['auth', 'tenant'])->name('vendedor.')->group(function () {
     // Products CRUD
-    Route::get('/products/search', [ProductWebController::class, 'search'])->name('products.search');
-    Route::resource('products', ProductWebController::class);
-    
-    // Categories CRUD
-    Route::resource('categories', CategoryWebController::class)->except(['show']);
-    
-    // Coupons CRUD
-    Route::post('/coupons/validate', [CouponWebController::class, 'validateCoupon'])->name('coupons.validate');
-    Route::resource('coupons', CouponWebController::class)->except(['show']);
+    Route::get('/productos', [TenantProductController::class, 'index'])->name('productos.index');
+    Route::get('/productos/crear', [TenantProductController::class, 'create'])->name('productos.create');
+    Route::post('/productos', [TenantProductController::class, 'store'])->name('productos.store');
+    Route::get('/productos/{product}/editar', [TenantProductController::class, 'edit'])->name('productos.edit');
+    Route::put('/productos/{product}', [TenantProductController::class, 'update'])->name('productos.update');
+    Route::delete('/productos/{product}', [TenantProductController::class, 'destroy'])->name('productos.destroy');
     
     // Orders Management
-    Route::get('/orders', [OrderWebController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [OrderWebController::class, 'show'])->name('orders.show');
-    Route::put('/orders/{order}/status', [OrderWebController::class, 'updateStatus'])->name('orders.updateStatus');
-    
-    // Users Management
-    Route::resource('users', UserWebController::class)->except(['create', 'store']);
-    Route::get('/users/create', [UserWebController::class, 'create'])->name('users.create');
-    Route::post('/users', [UserWebController::class, 'store'])->name('users.store');
-    
-    // Reviews Management
-    Route::get('/reviews', [ReviewWebController::class, 'index'])->name('reviews.index');
-    Route::get('/reviews/{productReview}', [ReviewWebController::class, 'show'])->name('reviews.show');
-    Route::delete('/reviews/{productReview}', [ReviewWebController::class, 'destroy'])->name('reviews.destroy');
-    
-    // Payment Gateways
-    Route::get('/payment-gateways', [PaymentGatewayWebController::class, 'index'])->name('payment-gateways.index');
-    Route::get('/payment-gateways/{paymentGateway}/edit', [PaymentGatewayWebController::class, 'edit'])->name('payment-gateways.edit');
-    Route::put('/payment-gateways/{paymentGateway}', [PaymentGatewayWebController::class, 'update'])->name('payment-gateways.update');
-    
-    // Reports
-    Route::get('/reports', [ReportController::class, 'salesReport'])->name('reports.sales');
-    Route::get('/reports/export', [ReportController::class, 'exportOrders'])->name('reports.export');
+    Route::get('/pedidos', [TenantOrderController::class, 'index'])->name('pedidos.index');
+    Route::get('/pedidos/{order}', [TenantOrderController::class, 'show'])->name('pedidos.show');
+    Route::put('/pedidos/{order}/estado', [TenantOrderController::class, 'updateStatus'])->name('pedidos.updateStatus');
     
     // Settings
-    Route::get('/settings', [SettingsWebController::class, 'index'])->name('settings.index');
-    Route::post('/settings/clear-cache', [SettingsWebController::class, 'clearCache'])->name('settings.clear-cache');
-    Route::post('/settings/update-password', [SettingsWebController::class, 'updatePassword'])->name('settings.update-password');
-    Route::post('/settings/update-email', [SettingsWebController::class, 'updateEmail'])->name('settings.update-email');
+    Route::get('/configuracion', [TenantSettingsController::class, 'index'])->name('configuracion.index');
+    Route::post('/configuracion/general', [TenantSettingsController::class, 'updateGeneral'])->name('configuracion.general');
+    Route::post('/configuracion/marca', [TenantSettingsController::class, 'updateBranding'])->name('configuracion.marca');
+    Route::post('/configuracion/diseno', [TenantSettingsController::class, 'updateDesign'])->name('configuracion.diseno');
+    Route::post('/configuracion/redes', [TenantSettingsController::class, 'updateSocial'])->name('configuracion.redes');
+    Route::post('/configuracion/seo', [TenantSettingsController::class, 'updateSeo'])->name('configuracion.seo');
+    Route::post('/configuracion/hero', [TenantSettingsController::class, 'updateHero'])->name('configuracion.hero');
 });
 
-// Tenant Panel Routes (for vendors/tenant admins)
-Route::prefix('tenant')->middleware(['auth', 'tenant'])->name('tenant.')->group(function () {
-    // Dashboard redirige al unificado
-    Route::get('/dashboard', function() {
-        return redirect()->route('dashboard.index');
-    })->name('dashboard');
-    
-    // Products CRUD
-    Route::resource('products', TenantProductController::class);
-    
-    // Orders Management
-    Route::get('/orders', [TenantOrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [TenantOrderController::class, 'show'])->name('orders.show');
-    Route::put('/orders/{order}/status', [TenantOrderController::class, 'updateStatus'])->name('orders.updateStatus');
-    
-    // Settings
-    Route::get('/settings', [TenantSettingsController::class, 'index'])->name('settings.index');
-    Route::post('/settings/general', [TenantSettingsController::class, 'updateGeneral'])->name('settings.general');
-    Route::post('/settings/branding', [TenantSettingsController::class, 'updateBranding'])->name('settings.branding');
-    Route::post('/settings/design', [TenantSettingsController::class, 'updateDesign'])->name('settings.design');
-    Route::post('/settings/social', [TenantSettingsController::class, 'updateSocial'])->name('settings.social');
-    Route::post('/settings/seo', [TenantSettingsController::class, 'updateSeo'])->name('settings.seo');
-    Route::post('/settings/hero', [TenantSettingsController::class, 'updateHero'])->name('settings.hero');
-});
-
-// Super Admin Panel Routes (gestión global del sistema)
+// ========================================
+// SUPER ADMIN PANEL
+// Panel de administración global del sistema
+// Prefijo: /super-admin
+// ========================================
 Route::prefix('super-admin')->middleware(['auth', 'super.admin'])->name('super-admin.')->group(function () {
-    // Dashboard redirige al unificado
-    Route::get('/dashboard', function() {
-        return redirect()->route('dashboard.index');
-    })->name('dashboard');
+    // Dashboard propio del super admin
+    Route::get('/dashboard', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'dashboard'])->name('dashboard');
     
     // Tenants Management
-    Route::get('/tenants', [SuperAdminController::class, 'tenants'])->name('tenants');
-    Route::get('/tenants/create', [SuperAdminController::class, 'createTenant'])->name('tenants.create');
-    Route::post('/tenants', [SuperAdminController::class, 'storeTenant'])->name('tenants.store');
-    Route::get('/tenants/{tenant}', [SuperAdminController::class, 'showTenant'])->name('tenants.show');
-    Route::get('/tenants/{tenant}/edit', [SuperAdminController::class, 'editTenant'])->name('tenants.edit');
-    Route::put('/tenants/{tenant}', [SuperAdminController::class, 'updateTenant'])->name('tenants.update');
-    Route::delete('/tenants/{tenant}', [SuperAdminController::class, 'destroyTenant'])->name('tenants.destroy');
-    Route::post('/tenants/{tenant}/toggle-status', [SuperAdminController::class, 'toggleTenantStatus'])->name('tenants.toggle-status');
+    Route::get('/tenants', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'tenants'])->name('tenants');
+    Route::get('/tenants/create', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'createTenant'])->name('tenants.create');
+    Route::post('/tenants', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storeTenant'])->name('tenants.store');
+    Route::get('/tenants/{tenant}', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'showTenant'])->name('tenants.show');
+    Route::get('/tenants/{tenant}/edit', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'editTenant'])->name('tenants.edit');
+    Route::put('/tenants/{tenant}', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updateTenant'])->name('tenants.update');
+    Route::delete('/tenants/{tenant}', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'destroyTenant'])->name('tenants.destroy');
+    Route::post('/tenants/{tenant}/toggle-status', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'toggleTenantStatus'])->name('tenants.toggle-status');
     
     // Users Management (all users)
-    Route::get('/users', [SuperAdminController::class, 'users'])->name('users');
-    Route::get('/users/{id}/details', [SuperAdminController::class, 'getUserDetails'])->name('users.details');
-    Route::get('/users/{id}/edit', [SuperAdminController::class, 'editUser'])->name('users.edit');
-    Route::put('/users/{id}', [SuperAdminController::class, 'updateUser'])->name('users.update');
-    Route::post('/users/{id}/reset-password', [SuperAdminController::class, 'resetUserPassword'])->name('users.reset-password');
-    Route::delete('/users/{id}', [SuperAdminController::class, 'deleteUser'])->name('users.delete');
+    Route::get('/users', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'users'])->name('users');
+    Route::get('/users/{id}/details', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'getUserDetails'])->name('users.details');
+    Route::get('/users/{id}/edit', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'editUser'])->name('users.edit');
+    Route::put('/users/{id}', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updateUser'])->name('users.update');
+    Route::post('/users/{id}/reset-password', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'resetUserPassword'])->name('users.reset-password');
+    Route::delete('/users/{id}', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'deleteUser'])->name('users.delete');
     
     // Commissions & Revenue
-    Route::get('/commissions', [SuperAdminController::class, 'commissions'])->name('commissions');
+    Route::get('/commissions', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'commissions'])->name('commissions');
     
     // Vendor Requests Management
-    Route::get('/vendor-requests', [SuperAdminController::class, 'vendorRequests'])->name('vendor-requests');
-    Route::get('/vendor-requests/{id}', [SuperAdminController::class, 'showVendorRequest'])->name('vendor-requests.show');
-    Route::post('/vendor-requests/{id}/approve', [SuperAdminController::class, 'approveVendorRequest'])->name('vendor-requests.approve');
-    Route::post('/vendor-requests/{id}/reject', [SuperAdminController::class, 'rejectVendorRequest'])->name('vendor-requests.reject');
+    Route::get('/vendor-requests', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'vendorRequests'])->name('vendor-requests');
+    Route::get('/vendor-requests/{id}', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'showVendorRequest'])->name('vendor-requests.show');
+    Route::post('/vendor-requests/{id}/approve', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'approveVendorRequest'])->name('vendor-requests.approve');
+    Route::post('/vendor-requests/{id}/reject', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'rejectVendorRequest'])->name('vendor-requests.reject');
 });
 
 // Public Vendor Registration Routes

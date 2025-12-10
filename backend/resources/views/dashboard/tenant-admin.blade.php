@@ -20,13 +20,13 @@
                     <a href="{{ route('dashboard.index') }}" class="px-3 py-2 rounded hover:bg-blue-700">
                         <i class="fas fa-chart-line mr-2"></i>Dashboard
                     </a>
-                    <a href="{{ route('tenant.products.index') }}" class="px-3 py-2 rounded hover:bg-blue-700">
+                    <a href="{{ route('vendedor.productos.index') }}" class="px-3 py-2 rounded hover:bg-blue-700">
                         <i class="fas fa-box mr-2"></i>Productos
                     </a>
-                    <a href="{{ route('tenant.orders.index') }}" class="px-3 py-2 rounded hover:bg-blue-700">
+                    <a href="{{ route('vendedor.pedidos.index') }}" class="px-3 py-2 rounded hover:bg-blue-700">
                         <i class="fas fa-shopping-cart mr-2"></i>Pedidos
                     </a>
-                    <a href="{{ route('tenant.settings.index') }}" class="px-3 py-2 rounded hover:bg-blue-700">
+                    <a href="{{ route('vendedor.configuracion.index') }}" class="px-3 py-2 rounded hover:bg-blue-700">
                         <i class="fas fa-cog mr-2"></i>Configuración
                     </a>
                     <a href="/tienda/{{ $tenant->slug }}" target="_blank" class="px-3 py-2 rounded hover:bg-blue-700">
@@ -113,7 +113,7 @@
 
         <!-- Accesos Rápidos -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <a href="{{ route('tenant.products.index') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+            <a href="{{ route('vendedor.productos.index') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
                 <div class="flex items-center mb-3">
                     <i class="fas fa-box text-2xl text-blue-600 mr-3"></i>
                     <h3 class="font-semibold text-lg text-gray-800">Gestionar Productos</h3>
@@ -121,7 +121,7 @@
                 <p class="text-gray-600 text-sm">Agrega, edita o elimina productos de tu tienda</p>
             </a>
 
-            <a href="{{ route('tenant.orders.index') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+            <a href="{{ route('vendedor.pedidos.index') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
                 <div class="flex items-center mb-3">
                     <i class="fas fa-shopping-cart text-2xl text-green-600 mr-3"></i>
                     <h3 class="font-semibold text-lg text-gray-800">Ver Pedidos</h3>
@@ -129,7 +129,7 @@
                 <p class="text-gray-600 text-sm">Gestiona los pedidos de tus clientes</p>
             </a>
 
-            <a href="{{ route('tenant.settings.index') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+            <a href="{{ route('vendedor.configuracion.index') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
                 <div class="flex items-center mb-3">
                     <i class="fas fa-credit-card text-2xl text-purple-600 mr-3"></i>
                     <h3 class="font-semibold text-lg text-gray-800">Configurar Pago</h3>
