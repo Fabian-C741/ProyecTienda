@@ -185,70 +185,6 @@
                 </div>
             </div>
 
-            <!-- Credenciales de Acceso -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-key text-yellow-600 mr-2"></i>
-                    Credenciales de Acceso
-                </h2>
-                @php
-                    $admin = \App\Models\User::where('tenant_id', $tenant->id)
-                                             ->where('role', 'admin')
-                                             ->first();
-                @endphp
-                
-                @if($admin)
-                <div class="space-y-4">
-                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
-                        <p class="text-sm text-yellow-800 mb-3">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            Estas son las credenciales del administrador de la tienda
-                        </p>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="text-xs font-medium text-gray-600">Nombre</label>
-                                <p class="text-gray-900 font-semibold">{{ $admin->name }}</p>
-                            </div>
-                            <div>
-                                <label class="text-xs font-medium text-gray-600">Email de acceso</label>
-                                <div class="flex items-center gap-2">
-                                    <p class="text-gray-900 font-mono bg-white px-3 py-1 rounded border">{{ $admin->email }}</p>
-                                    <button onclick="copyText('{{ $admin->email }}')" class="text-indigo-600 hover:text-indigo-800" title="Copiar email">
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="bg-red-50 border border-red-200 rounded p-3">
-                                <label class="text-xs font-medium text-red-800 flex items-center gap-1">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    Contraseña
-                                </label>
-                                <p class="text-red-900 text-sm mt-1">
-                                    Por seguridad, las contraseñas están encriptadas y no se pueden visualizar.
-                                </p>
-                                <p class="text-xs text-red-700 mt-2">
-                                    💡 Si el usuario olvidó su contraseña, usa la opción "Resetear Contraseña" en la gestión de usuarios.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="pt-3 border-t">
-                        <a href="{{ route('super-admin.users.edit', $admin->id) }}" 
-                           class="inline-flex items-center text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-                            <i class="fas fa-user-edit mr-2"></i>
-                            Editar Usuario Administrador
-                        </a>
-                    </div>
-                </div>
-                @else
-                <div class="bg-gray-50 border border-gray-200 rounded p-4 text-center">
-                    <i class="fas fa-user-slash text-gray-400 text-3xl mb-2"></i>
-                    <p class="text-gray-600">No se encontró usuario administrador para esta tienda</p>
-                </div>
-                @endif
-            </div>
-
             <!-- Configuración -->
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
@@ -368,13 +304,8 @@
         function copyURL() {
             const url = "https://ingreso-tienda.kcrsf.com/tienda/{{ $tenant->slug }}";
             navigator.clipboard.writeText(url).then(() => {
+                // Mostrar mensaje de éxito
                 alert('URL copiada: ' + url);
-            });
-        }
-
-        function copyText(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('📋 Copiado: ' + text);
             });
         }
     </script>
