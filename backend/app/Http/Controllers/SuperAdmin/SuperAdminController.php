@@ -31,7 +31,7 @@ class SuperAdminController extends Controller
             'active_tenants' => Tenant::where('status', 'active')->count(),
             'total_products' => Product::count(),
             'total_orders' => Order::count(),
-            'total_revenue' => Order::where('payment_status', 'paid')->sum('total_amount'),
+            'total_revenue' => Order::where('payment_status', 'paid')->sum('total'),
             'total_users' => User::count(),
         ];
 
@@ -47,7 +47,7 @@ class SuperAdminController extends Controller
         // Ingresos por mes (últimos 6 meses)
         $monthlyRevenue = Order::select(
                 DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
-                DB::raw('SUM(total_amount) as revenue'),
+                DB::raw('SUM(total) as revenue'),
                 DB::raw('COUNT(*) as orders')
             )
             ->where('payment_status', 'paid')
@@ -165,7 +165,7 @@ class SuperAdminController extends Controller
         $stats = [
             'total_products' => $tenant->products()->count(),
             'total_orders' => $tenant->orders()->count(),
-            'total_revenue' => $tenant->orders()->where('payment_status', 'paid')->sum('total_amount'),
+            'total_revenue' => $tenant->orders()->where('payment_status', 'paid')->sum('total'),
             'total_users' => $tenant->users()->count(),
         ];
 
@@ -296,7 +296,7 @@ class SuperAdminController extends Controller
                     ->where('payment_status', 'paid')
                     ->get();
                 
-                $totalSales = $paidOrders->sum('total_amount');
+                $totalSales = $paidOrders->sum('total');
                 $commission = $totalSales * ($tenant->commission_rate / 100);
 
                 return [

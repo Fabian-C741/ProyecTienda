@@ -22,7 +22,7 @@ class TenantDashboardController extends Controller
         $stats = [
             'total_sales' => Order::where('tenant_id', $tenant->id)
                 ->where('status', 'completed')
-                ->sum('total_amount'),
+                ->sum('total'),
             'total_orders' => Order::where('tenant_id', $tenant->id)->count(),
             'total_products' => Product::where('tenant_id', $tenant->id)->count(),
             'total_customers' => Order::where('tenant_id', $tenant->id)

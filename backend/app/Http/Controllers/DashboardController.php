@@ -55,7 +55,7 @@ class DashboardController extends Controller
             'active_tenants' => Tenant::where('status', 'active')->count(),
             'total_products' => Product::count(),
             'total_orders' => Order::count(),
-            'total_revenue' => Order::where('payment_status', 'paid')->sum('total_amount'),
+            'total_revenue' => Order::where('payment_status', 'paid')->sum('total'),
             'total_users' => User::count(),
             'pending_orders' => Order::where('status', 'pending')->count(),
         ];
@@ -67,7 +67,7 @@ class DashboardController extends Controller
         foreach ($tenants as $tenant) {
             $tenantSales = Order::where('tenant_id', $tenant->id)
                 ->where('payment_status', 'paid')
-                ->sum('total_amount');
+                ->sum('total');
             $totalCommissions += $tenantSales * ($tenant->commission_rate / 100);
         }
         
@@ -113,7 +113,7 @@ class DashboardController extends Controller
             'active_products' => Product::where('tenant_id', $tenant->id)->where('is_active', true)->count(),
             'my_orders' => Order::where('tenant_id', $tenant->id)->count(),
             'pending_orders' => Order::where('tenant_id', $tenant->id)->where('status', 'pending')->count(),
-            'my_revenue' => Order::where('tenant_id', $tenant->id)->where('payment_status', 'paid')->sum('total_amount'),
+            'my_revenue' => Order::where('tenant_id', $tenant->id)->where('payment_status', 'paid')->sum('total'),
             'my_customers' => Order::where('tenant_id', $tenant->id)->distinct('user_id')->count('user_id'),
         ];
 
@@ -156,7 +156,7 @@ class DashboardController extends Controller
 
         $stats = [
             'total_orders' => Order::where('user_id', $user->id)->count(),
-            'total_spent' => Order::where('user_id', $user->id)->where('payment_status', 'paid')->sum('total_amount'),
+            'total_spent' => Order::where('user_id', $user->id)->where('payment_status', 'paid')->sum('total'),
             'pending_orders' => Order::where('user_id', $user->id)->where('status', 'pending')->count(),
         ];
 

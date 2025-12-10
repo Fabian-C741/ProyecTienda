@@ -16,7 +16,13 @@ class Authenticate
     public function handle(Request $request, Closure $next, ...$guards): Response
     {
         if (auth()->guard($guards[0] ?? null)->guest()) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            // Si es una petición API, devolver JSON
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['message' => 'Unauthenticated.'], 401);
+            }
+            
+            // Si es una petición web, mostrar página bonita
+            return response()->view('errors.unauthenticated', [], 401);
         }
 
         return $next($request);
