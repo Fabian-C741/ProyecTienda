@@ -218,5 +218,15 @@ Route::prefix('super-admin')->middleware(['auth', 'super.admin'])->name('super-a
     
     // Commissions & Revenue
     Route::get('/commissions', [SuperAdminController::class, 'commissions'])->name('commissions');
+    
+    // Vendor Requests Management
+    Route::get('/vendor-requests', [SuperAdminController::class, 'vendorRequests'])->name('vendor-requests');
+    Route::get('/vendor-requests/{id}', [SuperAdminController::class, 'showVendorRequest'])->name('vendor-requests.show');
+    Route::post('/vendor-requests/{id}/approve', [SuperAdminController::class, 'approveVendorRequest'])->name('vendor-requests.approve');
+    Route::post('/vendor-requests/{id}/reject', [SuperAdminController::class, 'rejectVendorRequest'])->name('vendor-requests.reject');
 });
+
+// Public Vendor Registration Routes
+Route::get('/registro-vendedor', [\App\Http\Controllers\VendorRequestController::class, 'showForm'])->name('vendor.request.form');
+Route::post('/registro-vendedor', [\App\Http\Controllers\VendorRequestController::class, 'submitRequest'])->name('vendor.request.submit');
 

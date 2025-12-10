@@ -31,6 +31,9 @@ class AuthController extends Controller
             'address' => 'nullable|string|max:255',
         ]);
 
+        // Obtener el tenant_id de la sesión (seteado por DetectTenantBySubdomain)
+        $tenantId = session('tenant_id', null);
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -39,6 +42,7 @@ class AuthController extends Controller
             'phone' => $request->phone,
             'address' => $request->address,
             'is_active' => true,
+            'tenant_id' => $tenantId, // Asociar al tenant si se registra desde subdominio
         ]);
 
         // Asignar rol de customer

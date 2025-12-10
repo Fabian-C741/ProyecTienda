@@ -451,4 +451,125 @@ class SuperAdminController extends Controller
             'message' => 'Usuario eliminado exitosamente'
         ]);
     }
+
+    /**
+     * Ver solicitudes de vendedores
+     */
+    public function vendorRequests(Request $request)
+    {
+        $query = \App\Models\VendorRequest::query();
+
+        // Filtro por estado
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        $requests = $query->latest()->paginate(20);
+
+        return view('super-admin.vendor-requests.index', compact('requests'));
+    }
+
+    /**
+     * Ver detalles de una solicitud
+     */
+    public function showVendorRequest($id)
+    {
+        $vendorRequest = \App\Models\VendorRequest::findOrFail($id);
+        return view('super-admin.vendor-requests.show', compact('vendorRequest'));
+    }
+
+    /**
+     * Aprobar solicitud y crear tienda
+     */
+    public function approveVendorRequest(Request $request, $id)
+    {
+        $vendorRequest = \App\Models\VendorRequest::findOrFail($id);
+
+        if ($vendorRequest->status !== 'pending') {
+            return back()->with('error', 'Esta solicitud ya fue procesada');
+        }
+
+        $request->validate([
+            'commission_rate' => 'required|numeric|min:0|max:100',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Crear el tenant
+            $tenant = Tenant::create([
+                'name' => $vendorRequest->store_name,
+                'slug' => $vendorRequest->slug,
+                'email' => $vendorRequest->email,
+                'phone' => $vendorRequest->phone,
+                'description' => $vendorRequest->description,
+                'commission_rate' => $request->commission_rate,
+                'status' => 'active',
+            ]);
+
+            // Generar contraseña temporal
+            $temporaryPassword = Str::random(12);
+
+            // Crear usuario admin del tenant
+            $adminUser = User::create([
+                'name' => $vendorRequest->owner_name,
+                'email' => $vendorRequest->email,
+                'password' => Hash::make($temporaryPassword),
+                'role' => 'tenant_admin',
+                'tenant_id' => $tenant->id,
+                'status' => 'active',
+            ]);
+
+            // Actualizar solicitud
+            $vendorRequest->update([
+                'status' => 'approved',
+                'approved_by' => auth()->id(),
+                'approved_at' => now(),
+                'admin_notes' => $request->admin_notes,
+            ]);
+
+            DB::commit();
+
+            // TODO: Enviar email con credenciales
+            // Mail::to($vendorRequest->email)->send(new TenantCreated($tenant, $temporaryPassword));
+
+            return redirect()->route('super-admin.vendor-requests')
+                ->with('success', "Tienda '{$tenant->name}' creada exitosamente. Contraseña temporal: {$temporaryPassword}");
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error al crear la tienda: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Rechazar solicitud
+     */
+    public function rejectVendorRequest(Request $request, $id)
+    {
+        $vendorRequest = \App\Models\VendorRequest::findOrFail($id);
+
+        if ($vendorRequest->status !== 'pending') {
+            return back()->with('error', 'Esta solicitud ya fue procesada');
+        }
+
+        $request->validate([
+            'admin_notes' => 'required|string|min:10',
+        ], [
+            'admin_notes.required' => 'Debes especificar el motivo del rechazo',
+            'admin_notes.min' => 'El motivo debe tener al menos 10 caracteres',
+        ]);
+
+        $vendorRequest->update([
+            'status' => 'rejected',
+            'approved_by' => auth()->id(),
+            'approved_at' => now(),
+            'admin_notes' => $request->admin_notes,
+        ]);
+
+        // TODO: Enviar email notificando rechazo
+        // Mail::to($vendorRequest->email)->send(new RequestRejected($vendorRequest));
+
+        return redirect()->route('super-admin.vendor-requests')
+            ->with('success', 'Solicitud rechazada');
+    }
 }
