@@ -29,8 +29,66 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+            $this->logDetailedException($e);
         });
+    }
+
+    /**
+     * 🔥 SISTEMA AVANZADO DE LOGGING CON CONTEXTO COMPLETO
+     */
+    protected function logDetailedException(Throwable $exception): void
+    {
+        $context = [
+            'exception' => get_class($exception),
+            'message' => $exception->getMessage(),
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+            'url' => request()->fullUrl(),
+            'method' => request()->method(),
+            'ip' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'user_id' => auth()->check() ? auth()->id() : 'guest',
+            'tenant_id' => auth()->check() && auth()->user()->tenant_id ? auth()->user()->tenant_id : 'N/A',
+            'stack_trace' => $exception->getTraceAsString(),
+            'timestamp' => now()->toDateTimeString(),
+        ];
+
+        // Log de errores graves en archivo separado
+        if ($this->isCriticalException($exception)) {
+            \Log::channel('critical_errors')->critical(
+                '🚨 CRITICAL ERROR: ' . $exception->getMessage(),
+                $context
+            );
+        } elseif ($this->isQueryException($exception)) {
+            \Log::channel('errors')->error(
+                '🔴 DATABASE ERROR: ' . $exception->getMessage(),
+                $context
+            );
+        } else {
+            \Log::channel('errors')->error(
+                '⚠️ APPLICATION ERROR: ' . $exception->getMessage(),
+                $context
+            );
+        }
+    }
+
+    /**
+     * Determinar si es una excepción crítica
+     */
+    protected function isCriticalException(Throwable $exception): bool
+    {
+        return $exception instanceof \RuntimeException
+            || $exception instanceof \ErrorException
+            || str_contains($exception->getMessage(), 'CRITICAL')
+            || str_contains($exception->getMessage(), 'SQLSTATE');
+    }
+
+    /**
+     * Determinar si es un error de base de datos
+     */
+    protected function isQueryException(Throwable $exception): bool
+    {
+        return $exception instanceof \Illuminate\Database\QueryException;
     }
 
     /**

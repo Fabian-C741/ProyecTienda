@@ -56,6 +56,14 @@ class CheckoutController extends Controller
         DB::beginTransaction();
 
         try {
+            // 📊 Log inicio de checkout
+            \Log::channel('checkout')->info('🛒 Inicio de checkout', [
+                'user_id' => auth()->id(),
+                'cart_items' => count($cart),
+                'payment_method' => $request->payment_method,
+                'ip' => request()->ip(),
+            ]);
+
             $subtotal = $this->calculateSubtotal($cart);
             $discount = session()->get('cart_discount', 0);
             $shipping = 0;
@@ -126,6 +134,16 @@ class CheckoutController extends Controller
 
             DB::commit();
 
+            // 📊 Log checkout exitoso
+            \Log::channel('checkout')->info('✅ Checkout exitoso', [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'user_id' => auth()->id(),
+                'tenant_id' => $tenantId,
+                'total' => $total,
+                'payment_method' => $request->payment_method,
+            ]);
+
             // Limpiar carrito y sesión
             session()->forget(['cart', 'cart_discount', 'applied_coupon']);
 
@@ -138,6 +156,18 @@ class CheckoutController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            // 🔴 Log error crítico en checkout
+            \Log::channel('checkout')->error('❌ Error en checkout', [
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id(),
+                'cart_items' => count($cart),
+                'payment_method' => $request->payment_method,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'stack_trace' => $e->getTraceAsString(),
+            ]);
+            
             return back()->with('error', 'Error al procesar el pedido: ' . $e->getMessage());
         }
     }

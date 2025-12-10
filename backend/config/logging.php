@@ -54,7 +54,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['daily', 'errors', 'critical_errors'],
             'ignore_exceptions' => false,
         ],
 
@@ -68,8 +68,26 @@ return [
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
-            'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 14,
+            'level' => env('LOG_LEVEL', 'info'),
+            'days' => 30,
+            'replace_placeholders' => true,
+        ],
+        
+        // 🔥 NUEVO: Log específico para errores (500, excepciones)
+        'errors' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/errors.log'),
+            'level' => 'error',
+            'days' => 60, // Mantener errores por 60 días
+            'replace_placeholders' => true,
+        ],
+        
+        // 🔥 NUEVO: Log crítico para fallos graves
+        'critical_errors' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/critical.log'),
+            'level' => 'critical',
+            'days' => 90, // Mantener críticos por 90 días
             'replace_placeholders' => true,
         ],
         
@@ -78,6 +96,24 @@ return [
             'path' => storage_path('logs/audit.log'),
             'level' => 'info',
             'days' => 90, // Mantener logs de auditoría por 90 días
+            'replace_placeholders' => true,
+        ],
+        
+        // 🔥 NUEVO: Log para checkout (transacciones, pagos)
+        'checkout' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/checkout.log'),
+            'level' => 'info',
+            'days' => 90,
+            'replace_placeholders' => true,
+        ],
+        
+        // 🔥 NUEVO: Log para acciones de vendedores
+        'vendor' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/vendor.log'),
+            'level' => 'info',
+            'days' => 30,
             'replace_placeholders' => true,
         ],
 

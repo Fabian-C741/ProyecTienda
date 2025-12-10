@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Scopes\TenantScope;
 use Carbon\Carbon;
 
 class Coupon extends Model
@@ -11,6 +12,7 @@ class Coupon extends Model
     use HasFactory;
 
     protected $fillable = [
+        'tenant_id',
         'code',
         'type',
         'value',
@@ -21,6 +23,29 @@ class Coupon extends Model
         'is_active',
         'description'
     ];
+
+    /**
+     * CRÍTICO: Aplicar Global Scope para aislamiento de cupones por tenant
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new TenantScope());
+
+        // Auto-asignar tenant_id al crear cupón
+        static::creating(function ($coupon) {
+            if (auth()->check() && auth()->user()->tenant_id) {
+                $coupon->tenant_id = auth()->user()->tenant_id;
+            }
+        });
+    }
+
+    /**
+     * Relación con Tenant
+     */
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 
     protected $casts = [
         'expires_at' => 'datetime',
