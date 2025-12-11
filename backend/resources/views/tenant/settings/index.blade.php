@@ -54,7 +54,7 @@
                         <h5 class="mb-0">Datos de la Tienda</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('vendedor.configuracion.updateStore') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('vendedor.configuracion.general') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             
                             <div class="row">
