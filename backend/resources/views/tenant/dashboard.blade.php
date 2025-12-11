@@ -146,7 +146,7 @@
         </div>
     </a>
 
-    <a href="{{ route('tenant.settings') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+    <a href="{{ route('vendedor.configuracion.index') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
         <div class="flex items-center">
             <div class="bg-purple-100 p-3 rounded-full mr-4">
                 <i class="fas fa-cog text-purple-600 text-xl"></i>
