@@ -12,7 +12,7 @@
     </div>
     <div class="card-body">
         <!-- Filters -->
-        <form method="GET" action="{{ route('tenant.orders.index') }}" class="row g-3 mb-4">
+        <form method="GET" action="{{ route('vendedor.pedidos.index') }}" class="row g-3 mb-4">
             <div class="col-md-4">
                 <label for="status" class="form-label">Estado</label>
                 <select name="status" id="status" class="form-select">
@@ -87,7 +87,7 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('tenant.orders.show', $order) }}" 
+                                <a href="{{ route('vendedor.pedidos.show', $order) }}" 
                                    class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-eye me-1"></i>Ver
                                 </a>
@@ -113,7 +113,7 @@
                     @endif
                 </p>
                 @if(request()->hasAny(['status', 'search']))
-                    <a href="{{ route('tenant.orders.index') }}" class="btn btn-outline-secondary mt-2">
+                    <a href="{{ route('vendedor.pedidos.index') }}" class="btn btn-outline-secondary mt-2">
                         Limpiar filtros
                     </a>
                 @endif

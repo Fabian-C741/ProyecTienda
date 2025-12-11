@@ -103,7 +103,7 @@
                         {{ $order->created_at->format('d/m/Y') }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <a href="{{ route('tenant.orders.show', $order) }}" class="text-blue-600 hover:text-blue-800">
+                        <a href="{{ route('vendedor.pedidos.show', $order) }}" class="text-blue-600 hover:text-blue-800">
                             Ver detalles
                         </a>
                     </td>
@@ -122,7 +122,7 @@
 
 <!-- Quick Actions -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <a href="{{ route('tenant.products.create') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+    <a href="{{ route('vendedor.productos.create') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
         <div class="flex items-center">
             <div class="bg-blue-100 p-3 rounded-full mr-4">
                 <i class="fas fa-plus text-blue-600 text-xl"></i>
@@ -134,7 +134,7 @@
         </div>
     </a>
 
-    <a href="{{ route('tenant.orders.index') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
+    <a href="{{ route('vendedor.pedidos.index') }}" class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition">
         <div class="flex items-center">
             <div class="bg-green-100 p-3 rounded-full mr-4">
                 <i class="fas fa-shopping-cart text-green-600 text-xl"></i>

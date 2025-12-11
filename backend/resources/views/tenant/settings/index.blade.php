@@ -54,7 +54,7 @@
                         <h5 class="mb-0">Datos de la Tienda</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('tenant.settings.updateStore') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('vendedor.configuracion.updateStore') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             
                             <div class="row">
@@ -148,7 +148,7 @@
                         <h5 class="mb-0">Personalización de Apariencia</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('tenant.settings.updateAppearance') }}" method="POST">
+                        <form action="{{ route('vendedor.configuracion.updateAppearance') }}" method="POST">
                             @csrf
                             
                             <div class="row">
@@ -239,7 +239,7 @@
                             3. Copia el Access Token y el Public Key
                         </div>
                         
-                        <form action="{{ route('tenant.settings.updateMercadoPago') }}" method="POST">
+                        <form action="{{ route('vendedor.configuracion.updateMercadoPago') }}" method="POST">
                             @csrf
                             
                             <div class="mb-3">
@@ -303,7 +303,7 @@ document.getElementById('testMercadoPago')?.addEventListener('click', async func
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Probando...';
     
     try {
-        const response = await fetch('{{ route("tenant.settings.testMercadoPago") }}', {
+        const response = await fetch('{{ route("vendedor.configuracion.testMercadoPago") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -73,7 +73,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Pedidos Recientes</h5>
-                <a href="{{ route('tenant.orders.index') }}" class="btn btn-sm btn-outline-primary">Ver Todos</a>
+                <a href="{{ route('vendedor.pedidos.index') }}" class="btn btn-sm btn-outline-primary">Ver Todos</a>
             </div>
             <div class="card-body p-0">
                 @if($recentOrders->count() > 0)
@@ -110,7 +110,7 @@
                                     </td>
                                     <td>{{ $order->created_at->format('d/m/Y') }}</td>
                                     <td>
-                                        <a href="{{ route('tenant.orders.show', $order) }}" class="btn btn-sm btn-outline-primary">
+                                        <a href="{{ route('vendedor.pedidos.show', $order) }}" class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </td>
@@ -174,7 +174,7 @@
                                     <h6 class="mb-1">{{ $product->name }}</h6>
                                     <small class="text-danger">Stock: {{ $product->stock }} unidades</small>
                                 </div>
-                                <a href="{{ route('tenant.products.edit', $product) }}" class="btn btn-sm btn-outline-warning">
+                                <a href="{{ route('vendedor.productos.edit', $product) }}" class="btn btn-sm btn-outline-warning">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                             </div>

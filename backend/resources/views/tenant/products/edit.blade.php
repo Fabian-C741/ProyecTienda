@@ -11,7 +11,7 @@
                 <h5 class="mb-0">Editar: {{ $product->name }}</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('tenant.products.update', $product) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('vendedor.productos.update', $product) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     
@@ -124,10 +124,10 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-save me-2"></i>Guardar Cambios
                         </button>
-                        <a href="{{ route('tenant.products.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('vendedor.productos.index') }}" class="btn btn-outline-secondary">
                             Cancelar
                         </a>
-                        <form action="{{ route('tenant.products.destroy', $product) }}" 
+                        <form action="{{ route('vendedor.productos.destroy', $product) }}" 
                               method="POST" class="ms-auto"
                               onsubmit="return confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.');">
                             @csrf

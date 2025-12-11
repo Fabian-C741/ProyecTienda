@@ -11,7 +11,7 @@
                 <h5 class="mb-0">Información del Producto</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('tenant.products.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('vendedor.productos.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="mb-3">
@@ -116,7 +116,7 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-save me-2"></i>Crear Producto
                         </button>
-                        <a href="{{ route('tenant.products.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('vendedor.productos.index') }}" class="btn btn-outline-secondary">
                             Cancelar
                         </a>
                     </div>

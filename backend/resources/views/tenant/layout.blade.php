@@ -227,19 +227,19 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('tenant.products.*') ? 'active' : '' }}" href="{{ route('tenant.products.index') }}">
+                        <a class="nav-link {{ request()->routeIs('vendedor.productos.*') ? 'active' : '' }}" href="{{ route('vendedor.productos.index') }}">
                             <i class="bi bi-box-seam"></i>
                             <span>Productos</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('tenant.orders.*') ? 'active' : '' }}" href="{{ route('tenant.orders.index') }}">
+                        <a class="nav-link {{ request()->routeIs('vendedor.pedidos.*') ? 'active' : '' }}" href="{{ route('vendedor.pedidos.index') }}">
                             <i class="bi bi-cart-check"></i>
                             <span>Pedidos</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('tenant.settings.*') ? 'active' : '' }}" href="{{ route('tenant.settings.index') }}">
+                        <a class="nav-link {{ request()->routeIs('vendedor.configuracion.*') ? 'active' : '' }}" href="{{ route('vendedor.configuracion.index') }}">
                             <i class="bi bi-gear"></i>
                             <span>Configuración</span>
                         </a>
@@ -269,7 +269,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                            <a class="dropdown-item" href="{{ route('tenant.settings.index') }}">
+                            <a class="dropdown-item" href="{{ route('vendedor.configuracion.index') }}">
                                 <i class="bi bi-gear me-2"></i>Configuración
                             </a>
                         </li>

@@ -126,7 +126,7 @@
                 <h5 class="mb-0">Estado del Pedido</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('tenant.orders.updateStatus', $order) }}" method="POST">
+                <form action="{{ route('vendedor.pedidos.updateStatus', $order) }}" method="POST">
                     @csrf
                     @method('PUT')
                     
@@ -231,7 +231,7 @@
 </div>
 
 <div class="mt-3">
-    <a href="{{ route('tenant.orders.index') }}" class="btn btn-outline-secondary">
+    <a href="{{ route('vendedor.pedidos.index') }}" class="btn btn-outline-secondary">
         <i class="bi bi-arrow-left me-2"></i>Volver a Pedidos
     </a>
 </div>

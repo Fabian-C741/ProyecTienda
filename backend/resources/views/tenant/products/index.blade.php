@@ -9,7 +9,7 @@
         <h5 class="mb-0">
             <i class="bi bi-box-seam me-2"></i>Productos
         </h5>
-        <a href="{{ route('tenant.products.create') }}" class="btn btn-primary">
+        <a href="{{ route('vendedor.productos.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-lg me-2"></i>Nuevo Producto
         </a>
     </div>
@@ -73,11 +73,11 @@
                             </td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('tenant.products.edit', $product) }}" 
+                                    <a href="{{ route('vendedor.productos.edit', $product) }}" 
                                        class="btn btn-sm btn-outline-primary" title="Editar">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form action="{{ route('tenant.products.destroy', $product) }}" 
+                                    <form action="{{ route('vendedor.productos.destroy', $product) }}" 
                                           method="POST" class="d-inline"
                                           onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
                                         @csrf
@@ -102,7 +102,7 @@
                 <i class="bi bi-box-seam display-1 text-muted"></i>
                 <h4 class="mt-3">No tienes productos aún</h4>
                 <p class="text-muted">Comienza agregando tu primer producto</p>
-                <a href="{{ route('tenant.products.create') }}" class="btn btn-primary mt-3">
+                <a href="{{ route('vendedor.productos.create') }}" class="btn btn-primary mt-3">
                     <i class="bi bi-plus-lg me-2"></i>Crear Producto
                 </a>
             </div>
