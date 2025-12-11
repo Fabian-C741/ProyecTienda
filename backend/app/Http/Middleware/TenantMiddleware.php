@@ -39,7 +39,7 @@ class TenantMiddleware
 
         // Verificar que el tenant esté activo
         $tenant = $user->tenant;
-        if (!$tenant || $tenant->status !== 'active') {
+        if (!$tenant || !$tenant->is_active) {
             abort(403, 'Tu tienda está inactiva. Contacta al administrador.');
         }
 
