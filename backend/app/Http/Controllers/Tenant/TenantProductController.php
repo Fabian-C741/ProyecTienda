@@ -33,7 +33,7 @@ class TenantProductController extends Controller
             ->latest()
             ->paginate(15);
 
-        return view('tenant.products.index', compact('products', 'tenant'));
+        return view('vendedor.productos.index', compact('products', 'tenant'));
     }
 
     public function create()
@@ -48,7 +48,7 @@ class TenantProductController extends Controller
         $tenant = $user->tenant;
         $categories = Category::where('tenant_id', $tenant->id)->get();
 
-        return view('tenant.products.create', compact('categories', 'tenant'));
+        return view('vendedor.productos.create', compact('categories', 'tenant'));
     }
 
     public function store(Request $request)
@@ -121,7 +121,7 @@ class TenantProductController extends Controller
         $tenant = auth()->user()->tenant;
         $categories = Category::where('tenant_id', $tenant->id)->get();
 
-        return view('tenant.products.edit', compact('product', 'categories', 'tenant'));
+        return view('vendedor.productos.edit', compact('product', 'categories', 'tenant'));
     }
 
     public function update(Request $request, Product $product)

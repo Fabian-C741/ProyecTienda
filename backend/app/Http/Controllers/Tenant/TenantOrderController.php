@@ -27,7 +27,7 @@ class TenantOrderController extends Controller
 
         $orders = $query->latest()->paginate(20);
 
-        return view('tenant.orders.index', compact('orders', 'tenant'));
+        return view('vendedor.pedidos.index', compact('orders', 'tenant'));
     }
 
     public function show(Order $order)
@@ -36,7 +36,7 @@ class TenantOrderController extends Controller
 
         $order->load(['user', 'items.product']);
 
-        return view('tenant.orders.show', compact('order'));
+        return view('vendedor.pedidos.show', compact('order'));
     }
 
     public function updateStatus(Request $request, Order $order)

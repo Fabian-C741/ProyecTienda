@@ -18,7 +18,7 @@ class TenantSettingsController extends Controller
         
         $tenant = $user->tenant;
         
-        return view('tenant.settings.index', compact('tenant'));
+        return view('vendedor.configuracion.index', compact('tenant'));
     }
 
     public function updateStore(Request $request)
