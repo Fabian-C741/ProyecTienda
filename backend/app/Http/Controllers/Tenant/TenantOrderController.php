@@ -10,7 +10,14 @@ class TenantOrderController extends Controller
 {
     public function index(Request $request)
     {
-        $tenant = auth()->user()->tenant;
+        $user = auth()->user();
+        
+        if (!$user->tenant_id || !$user->tenant) {
+            return redirect()->route('dashboard.index')
+                ->with('error', 'No tienes una tienda asignada.');
+        }
+        
+        $tenant = $user->tenant;
         
         $query = Order::where('tenant_id', $tenant->id)->with('user');
 

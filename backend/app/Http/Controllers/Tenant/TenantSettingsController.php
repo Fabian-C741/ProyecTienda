@@ -9,7 +9,14 @@ class TenantSettingsController extends Controller
 {
     public function index()
     {
-        $tenant = auth()->user()->tenant;
+        $user = auth()->user();
+        
+        if (!$user->tenant_id || !$user->tenant) {
+            return redirect()->route('dashboard.index')
+                ->with('error', 'No tienes una tienda asignada.');
+        }
+        
+        $tenant = $user->tenant;
         
         return view('tenant.settings.index', compact('tenant'));
     }

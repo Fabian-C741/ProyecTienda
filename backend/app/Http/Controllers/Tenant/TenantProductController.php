@@ -13,7 +13,20 @@ class TenantProductController extends Controller
 {
     public function index()
     {
-        $tenant = auth()->user()->tenant;
+        $user = auth()->user();
+        
+        // Verificar que el usuario tenga tenant_id
+        if (!$user->tenant_id) {
+            return redirect()->route('dashboard.index')
+                ->with('error', 'No tienes una tienda asignada. Contacta al administrador.');
+        }
+        
+        $tenant = $user->tenant;
+        
+        if (!$tenant) {
+            return redirect()->route('dashboard.index')
+                ->with('error', 'Tu tienda no existe. Contacta al administrador.');
+        }
         
         $products = Product::where('tenant_id', $tenant->id)
             ->with('category')
@@ -25,7 +38,14 @@ class TenantProductController extends Controller
 
     public function create()
     {
-        $tenant = auth()->user()->tenant;
+        $user = auth()->user();
+        
+        if (!$user->tenant_id || !$user->tenant) {
+            return redirect()->route('vendedor.productos.index')
+                ->with('error', 'No tienes una tienda asignada.');
+        }
+        
+        $tenant = $user->tenant;
         $categories = Category::where('tenant_id', $tenant->id)->get();
 
         return view('tenant.products.create', compact('categories', 'tenant'));
