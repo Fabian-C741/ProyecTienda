@@ -163,6 +163,9 @@ Route::prefix('vendedor')->middleware(['auth', 'tenant', 'throttle:60,1'])->name
     // Settings
     Route::get('/configuracion', [TenantSettingsController::class, 'index'])->name('configuracion.index');
     Route::post('/configuracion/general', [TenantSettingsController::class, 'updateGeneral'])->name('configuracion.general');
+    Route::post('/configuracion/tienda', [TenantSettingsController::class, 'updateStore'])->name('configuracion.tienda');
+    Route::post('/configuracion/apariencia', [TenantSettingsController::class, 'updateAppearance'])->name('configuracion.apariencia');
+    Route::post('/configuracion/mercadopago', [TenantSettingsController::class, 'updateMercadoPago'])->name('configuracion.mercadopago');
     Route::post('/configuracion/marca', [TenantSettingsController::class, 'updateBranding'])->name('configuracion.marca');
     Route::post('/configuracion/diseno', [TenantSettingsController::class, 'updateDesign'])->name('configuracion.diseno');
     Route::post('/configuracion/redes', [TenantSettingsController::class, 'updateSocial'])->name('configuracion.redes');

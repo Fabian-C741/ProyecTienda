@@ -54,7 +54,7 @@
                         <h5 class="mb-0">Datos de la Tienda</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('vendedor.configuracion.general') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('vendedor.configuracion.tienda') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             
                             <div class="row">
@@ -148,7 +148,7 @@
                         <h5 class="mb-0">Personalización de Apariencia</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('vendedor.configuracion.updateAppearance') }}" method="POST">
+                        <form action="{{ route('vendedor.configuracion.apariencia') }}" method="POST">
                             @csrf
                             
                             <div class="row">
@@ -239,7 +239,7 @@
                             3. Copia el Access Token y el Public Key
                         </div>
                         
-                        <form action="{{ route('vendedor.configuracion.updateMercadoPago') }}" method="POST">
+                        <form action="{{ route('vendedor.configuracion.mercadopago') }}" method="POST">
                             @csrf
                             
                             <div class="mb-3">
