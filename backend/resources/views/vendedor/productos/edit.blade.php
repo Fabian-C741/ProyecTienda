@@ -1,4 +1,4 @@
-@extends('tenant.layout')
+@extends('vendedor.layout')
 
 @section('title', 'Editar Producto')
 @section('page-title', 'Editar Producto')

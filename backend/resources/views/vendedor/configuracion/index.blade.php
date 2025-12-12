@@ -1,4 +1,4 @@
-@extends('tenant.layout')
+@extends('vendedor.layout')
 
 @section('title', 'Configuración')
 @section('page-title', 'Configuración de la Tienda')

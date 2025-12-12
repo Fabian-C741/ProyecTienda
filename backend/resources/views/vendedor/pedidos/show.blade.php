@@ -1,4 +1,4 @@
-@extends('tenant.layout')
+@extends('vendedor.layout')
 
 @section('title', 'Detalle del Pedido')
 @section('page-title', 'Pedido #' . $order->order_number)

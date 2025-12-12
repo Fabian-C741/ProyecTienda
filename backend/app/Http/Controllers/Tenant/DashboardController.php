@@ -49,6 +49,6 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        return view('tenant.dashboard.index', compact('tenant', 'stats', 'recentOrders', 'topProducts', 'lowStockProducts'));
+        return view('vendedor.dashboard.index', compact('tenant', 'stats', 'recentOrders', 'topProducts', 'lowStockProducts'));
     }
 }
